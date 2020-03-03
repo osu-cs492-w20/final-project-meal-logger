@@ -1,12 +1,14 @@
 package com.example.android.meallogger.data;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.android.meallogger.CreateMealActivity;
 import com.example.android.meallogger.utils.NetworkUtils;
 import com.example.android.meallogger.utils.UsdaAPIUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class APIQueryTask extends AsyncTask<String, Void, String> {
 
     public interface Callback {
         void handleSearchResults(ArrayList<FoodId> ids);
+        void handleDetailResults(MealItem food);
     }
 
     // Param[0]: Url
@@ -47,10 +50,12 @@ public class APIQueryTask extends AsyncTask<String, Void, String> {
         if(s!=null){
             switch (mApiMode){
             case "search":
-                ArrayList<FoodId> results = UsdaAPIUtils.parseSearchJSON(s);
-                mCallbackFC.handleSearchResults(results);
+                ArrayList<FoodId> sResults = UsdaAPIUtils.parseSearchJSON(s);
+                mCallbackFC.handleSearchResults(sResults);
                 return;
             case "detail":
+                MealItem dResults = UsdaAPIUtils.parseDetailJSON(s);
+                mCallbackFC.handleDetailResults(dResults);
                 return;
             default:
         }}
