@@ -11,6 +11,11 @@ public class UsdaAPIUtils {
 
     public static final String USDA_BASE_URL = "https://api.nal.usda.gov/fdc/v1/";
     public static final String USDA_API_KEY = "J8vThKbo9oxo6LktY1AEVXOTSvWRLMbj3gkjM1oV";
+
+    static class IdLookupResults {
+        ArrayList<FoodId> foods;
+    }
+
 // buildUsdaURL
 // https://api.nal.usda.gov/fdc/v1/search?api_key=J8vThKbo9oxo6LktY1AEVXOTSvWRLMbj3gkjM1oV&generalSearchInput=Peanut Butter&requireAllWords=true
 // searchType will either replace  ^^^^^^ "search" with parameter generalSearchInput="query" ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -35,6 +40,12 @@ public class UsdaAPIUtils {
 
     public static ArrayList<FoodId> parseSearchJSON(String searchJSON){
         Gson gson = new Gson();
-        return null;
+        IdLookupResults foodIDS = gson.fromJson(searchJSON, IdLookupResults.class);
+        if (foodIDS != null && foodIDS.foods != null){
+            return foodIDS.foods;
+        } else{
+            return null;
+        }
     }
+
 }
