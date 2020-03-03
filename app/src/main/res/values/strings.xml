@@ -2,5 +2,18 @@
     <string name="app_name">Meal Logger</string>
     <string name="activity_create">Creating a Meal</string>
 
-    <string name="title_create_item">Add Food Item</string>
+    <!-- Strings for the create Item Layout -->
+    <string name="display_create_fat">Fats:</string>
+    <string name="display_create_saturatefat">Saturated Fat:</string>
+    <string name="display_create_transfat">Trans Fat:</string>
+    <string name="display_create_cholesterol">Cholesterol:</string>
+    <string name="display_create_sodium">Sodium:</string>
+    <string name="display_create_carbohydrates">Carbohydrates:</string>
+    <string name="display_create_fiber">Fiber:</string>
+    <string name="display_create_sugar">Sugar:</string>
+    <string name="display_create_protein">Protein:</string>
+    <string name="display_create_calcium">Calcium:</string>
+    <string name="display_create_iron">Iron:</string>
+    <string name="display_create_calories">Calories:</string>
+
 </resources>

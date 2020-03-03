@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +29,9 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
     Boolean mAddModuleVisibile;
     MenuItem mShowAddModuleButton;
 
+    TextView mCalories;
+    TextView mProtein;
+    TextView mCarbohydrates;
 
 
     private static final String TAG = CreateMealActivity.class.getSimpleName();
@@ -42,6 +46,11 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
         mAddItemFrame.setVisibility(View.INVISIBLE);
         mAddItemTextBox = findViewById(R.id.et_item_lookup_box);
         mAddModuleVisibile = false;
+
+        mCalories = findViewById(R.id.tv_total_calories);
+        mProtein = findViewById(R.id.tv_total_protein);
+        mCarbohydrates = findViewById(R.id.tv_total_carbs);
+
 
         Button searchButton = findViewById(R.id.button_add_item);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +104,9 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
         Log.d(TAG, "!===Food:"+json.description
                 +"\nCalories:"+json.labelNutrients.calories.value
                 +"\nServing Size:"+json.servingSize+json.servingSizeUnit);
+        mCalories.setText(String.valueOf(json.labelNutrients.calories.value));
+        mProtein.setText(String.valueOf(json.labelNutrients.protein.value));
+        mCarbohydrates.setText(String.valueOf(json.labelNutrients.carbohydrates.value));
     }
 
     private void addFoodItemtoMeal(String query){
