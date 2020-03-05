@@ -63,7 +63,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Result
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    mClickListener.onRVClicked(
+                            mFoodChoices.get(getAdapterPosition())
+                    );
                 }
             });
         }

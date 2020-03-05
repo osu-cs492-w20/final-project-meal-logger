@@ -38,12 +38,9 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
     private FrameLayout mAddItemFrame;
     private EditText mAddItemTextBox;
     private Boolean mAddModuleVisibile;
-    private MenuItem mShowAddModuleButton;
     private MealCreationViewModel mViewModel;
     private RecyclerView mRvChoices;
-    private LinearLayout mRvHolder;
     private RecyclerAdapter mRvAdapter;
-    private Status mSearchStatus;
     private ProgressBar mPbSearch;
     private ImageButton mButtonAddItem;
     private List<FoodId> mChoiceContent;
@@ -52,6 +49,7 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
     private TextView mProtein;
     private TextView mCarbohydrates;
 
+    private View mShowAddModuleButton;
 
 
     private static final String TAG = CreateMealActivity.class.getSimpleName();
@@ -63,7 +61,6 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
         setContentView(R.layout.activity_create);
 
         mRvChoices = findViewById(R.id.rv_creation_choices);
-//        mRvHolder = findViewById(R.id.ll_rv_holder);
         mRvChoices.setLayoutManager(new LinearLayoutManager(this));
         mRvChoices.setHasFixedSize(true);
 
@@ -100,7 +97,6 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
         mViewModel.getStatus().observe(this, new Observer<Status>() {
             @Override
             public void onChanged(Status status) {
-                mSearchStatus = status;
                 if(status == Status.LOADING){
                     mAddItemTextBox.setEnabled(false);
                     mPbSearch.setVisibility(View.VISIBLE);
@@ -115,7 +111,6 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     //Pass choice into RV
-                    mChoiceContent = new ArrayList<FoodId>();
                     mChoiceContent = mViewModel.getFoodChoices().getValue();
                     Log.d(TAG, "!===mChoiceContent:"+mChoiceContent);
 
@@ -126,8 +121,10 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
                 }
                 else{
                     mAddItemTextBox.setEnabled(true);
+                    mAddItemTextBox.setVisibility(View.VISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
+                    mRvChoices.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -146,6 +143,13 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
 
     @Override
     public void onRVClicked(FoodId food){
+        Log.d(TAG, "!===More Details:"+food.fdcId);
+
+        mChoiceContent = null;
+        mRvChoices.setVisibility(View.INVISIBLE);
+        mAddItemTextBox.setVisibility(View.VISIBLE);
+        mPbSearch.setVisibility(View.VISIBLE);
+
         mViewModel.getItemDetails(food);
     }
 
@@ -166,42 +170,6 @@ public class CreateMealActivity extends AppCompatActivity implements RecyclerAda
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    // 1/2 CallBack function for APIQueryTask
-    // Gets ID, fetches food from ID
-//    public void handleSearchResults(ArrayList<FoodId> json){
-//        showModule();
-//        //For now this selects the first result avoiding the "Survey" type bc different JSON.
-//        //We can change this later, so the user can choose based on brand
-//        FoodId foodItem = json.get(0);
-//        int i = 0;
-//        while(!foodItem.dataType.equals("Branded")){
-//            foodItem = json.get(i++);
-//        }
-//        String url = UsdaAPIUtils.buildFoodDetailsURL(foodItem.fdcId);
-//        Log.d(TAG, "!===Querying:"+foodItem.fdcId+"\n"+url);
-//        new APIQueryTask(this).execute(url, "detail");
-//    }
-    // 2/2 CallBack function for APIQueryTask
-    // Get food details
-//    public void handleDetailResults(MealItem json){
-//        Log.d(TAG, "!===Food:"+json.description
-//                +"\nCalories:"+json.labelNutrients.calories.value
-//                +"\nServing Size:"+json.servingSize+json.servingSizeUnit);
-//        mCalories.setText(String.valueOf(json.labelNutrients.calories.value));
-//        mProtein.setText(String.valueOf(json.labelNutrients.protein.value));
-//        mCarbohydrates.setText(String.valueOf(json.labelNutrients.carbohydrates.value));
-//    }
-
-//    private void addFoodItemtoMeal(String query){
-//        if(query!=null){
-//            String url = UsdaAPIUtils.buildFoodSearchURL(query);
-//            Log.d(TAG, "!===Searching: "+query+"\n"+url);
-//            new APIQueryTask(mViewModel).execute(url, "search");
-//        } else{
-//            Log.d(TAG, "!===Failed addFoodItem(): No Query");
-//        }
-//    }
 
     private void showModule (){
         mAddModuleVisibile=!mAddModuleVisibile;

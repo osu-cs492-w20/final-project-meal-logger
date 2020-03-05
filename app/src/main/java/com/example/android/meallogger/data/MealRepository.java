@@ -38,6 +38,11 @@ public class MealRepository implements APIQueryTask.Callback{
     // 1/2 CallBack function for APIQueryTask
     // Gets ID, fetches food from ID
     public void handleSearchResults(ArrayList<FoodId> json){
+        if(json.isEmpty()){
+            Log.d(TAG, "!===Search Failed, No Results");
+            mStatus.setValue(Status.ERROR);
+            return;
+        }
         Log.d(TAG, "!===Search Complete, Food Choices:"+json);
         mFoodChoice.setValue(json);
         mStatus.setValue(Status.DONE);
