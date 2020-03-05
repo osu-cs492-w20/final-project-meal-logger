@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.android.meallogger.data.Meal;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerAdapter mRvAdapter;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 //        mItemRv.setLayoutManager(new LinearLayoutManager(this));
 //        mItemRv.setHasFixedSize(true);
         Intent intent = new Intent(this, CreateMealActivity.class);
+//        Meal newlyCreatedMeal = null;
         startActivity(intent);
     }
 }
