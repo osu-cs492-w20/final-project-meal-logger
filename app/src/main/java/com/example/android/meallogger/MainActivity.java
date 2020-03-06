@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 
 public class MainActivity extends AppCompatActivity {
 

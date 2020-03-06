@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -9,28 +10,39 @@
 
     <FrameLayout
         android:id="@+id/fl_add_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="24sp">
+
             <EditText
                 android:id="@+id/et_item_lookup_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
+                android:layout_gravity="top|center_horizontal"
                 android:hint="Lookup..."
-                android:layout_gravity="top|center_horizontal"/>
+                android:textSize="24sp" />
+
             <Button
                 android:id="@+id/button_add_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_done_black_24dp"
-                android:drawableLeft="@drawable/ic_done_black_24dp"
                 android:layout_gravity="bottom|center_horizontal"
-                />
+                android:drawableStart="@drawable/ic_done_black_24dp"
+                android:drawableLeft="@drawable/ic_done_black_24dp" />
+            <ImageButton
+                android:id="@+id/button_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_menu_camera" />
+            <ImageView
+                android:id="@+id/mealPic"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
         </LinearLayout>
     </FrameLayout>
     <LinearLayout

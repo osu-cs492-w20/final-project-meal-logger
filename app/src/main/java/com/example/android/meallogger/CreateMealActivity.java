@@ -1,6 +1,12 @@
 package com.example.android.meallogger;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -9,11 +15,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.android.meallogger.data.APIQueryTask;
 import com.example.android.meallogger.data.FoodId;
@@ -24,6 +34,7 @@ import com.example.android.meallogger.utils.UsdaAPIUtils;
 import java.util.ArrayList;
 
 public class CreateMealActivity extends AppCompatActivity implements APIQueryTask.Callback {
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     FrameLayout mAddItemFrame;
     EditText mAddItemTextBox;
     Boolean mAddModuleVisibile;
@@ -63,6 +74,13 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
             }
         });
 
+        ImageButton cameraButton = findViewById(R.id.button_camera);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
     }
 
     @Override
@@ -128,5 +146,36 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
 //            mShowAddModuleButton.setIcon(R.drawable.ic_add_white_24dp);
             mAddItemFrame.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        200);
+            }
+        } else {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ImageView imageView = findViewById(R.id.mealPic);
+            imageView.setImageBitmap(imageBitmap);
+        }
+        super.onActivityResult(requestCode,resultCode,data);
     }
 }
