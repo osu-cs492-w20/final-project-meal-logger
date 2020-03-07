@@ -12,17 +12,20 @@ import com.example.android.meallogger.data.FoodId;
 
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ResultViewHolder> {
+public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAdapter.ResultViewHolder> {
     List<FoodId> mFoodChoices;
 
-    TextView mAdapterTV;
+    TextView mTvAdapterDesc;
+    TextView mTvAdapterDataType;
+    TextView mTvAdapterBrandOwner;
+    TextView mTvAdapterId;
     OnResultClickListener mClickListener;
 
     interface OnResultClickListener {
         void onRVClicked(FoodId food);
     }
 
-    public RecyclerAdapter(OnResultClickListener listener){
+    public FoodidRecyclerAdapter(OnResultClickListener listener){
         mClickListener = listener;
     }
 
@@ -33,14 +36,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Result
 
     @NonNull
     @Override
-    public RecyclerAdapter.ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FoodidRecyclerAdapter.ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.adapter_item, parent, false);
+        View view = inflater.inflate(R.layout.adapter_choice_item, parent, false);
         return new ResultViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerAdapter.ResultViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FoodidRecyclerAdapter.ResultViewHolder holder, int position) {
         holder.bind(mFoodChoices.get(position));
     }
 
@@ -53,13 +56,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Result
         }
     }
 
+    public void clear() {
+        int size = getItemCount();
+        if(size>0){
+            mFoodChoices.clear();
+            notifyItemRangeRemoved(0, size);
+        }
+    }
 
     class ResultViewHolder extends RecyclerView.ViewHolder{
 
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);
-            mAdapterTV = itemView.findViewById(R.id.tv_adapter_item);
-
+            mTvAdapterDesc = itemView.findViewById(R.id.tv_adapter_choice_description);
+            mTvAdapterDataType = itemView.findViewById(R.id.tv_adapter_choice_data_type);
+            mTvAdapterBrandOwner = itemView.findViewById(R.id.tv_adapter_choice_brand_owner);
+            mTvAdapterId = itemView.findViewById(R.id.tv_adapter_choice_id);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -71,7 +83,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Result
         }
 
         public void bind(FoodId foodId) {
-            mAdapterTV.setText(foodId.description);
+            mTvAdapterDesc.setText(foodId.description);
+            mTvAdapterDataType.setText(foodId.dataType);
+            mTvAdapterId.setText(String.valueOf(foodId.fdcId));
+            if(foodId.dataType.equals("Branded")){
+                mTvAdapterBrandOwner.setText(foodId.brandOwner);
+            } else{
+                mTvAdapterBrandOwner.setText("");
+            }
         }
     }
 }
