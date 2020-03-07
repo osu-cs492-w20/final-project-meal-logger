@@ -45,6 +45,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     
     private FrameLayout mAddItemFrame;
     private EditText mAddItemTextBox;
+    private ImageView mImageView;
     private Boolean mAddModuleVisibile;
     private MealCreationViewModel mViewModel;
     private RecyclerView mRvChoices;
@@ -72,8 +73,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
     private View mShowAddModuleButton;
 
-
-
     private static final String TAG = CreateMealActivity.class.getSimpleName();
 
 
@@ -81,6 +80,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
+
+        mImageView = findViewById(R.id.mealPic);
 
         mRvChoices = findViewById(R.id.rv_creation_choices);
         mRvChoices.setLayoutManager(new LinearLayoutManager(this));
@@ -166,9 +167,11 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                         mRvAddAdapter.updateAdapter(mFinalMeal.items);
                         //                        mRvAddedItems.setVisibility(View.VISIBLE);
                     }
+                    mImageView.setVisibility(View.VISIBLE);
                     showModule();
                 } else if(status == Status.DONE){
-                    //Hide TextBox
+                    //Hide TextBox & Pic
+                    mImageView.setVisibility(View.GONE);
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     //Pass choice into RV
@@ -198,14 +201,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                 }
             }
         });
-
-        ImageButton cameraButton = findViewById(R.id.button_camera);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchTakePictureIntent();
-            }
-        });
     }
 
     @Override
@@ -232,6 +227,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             case R.id.action_new_food:
                 showModule();
                 return true;
+            case R.id.button_camera:
+                dispatchTakePictureIntent();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -278,8 +275,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageView imageView = findViewById(R.id.mealPic);
-            imageView.setImageBitmap(imageBitmap);
+            mImageView.setImageBitmap(imageBitmap);
         }
         super.onActivityResult(requestCode,resultCode,data);
     }

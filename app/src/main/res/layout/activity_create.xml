@@ -7,17 +7,24 @@
     android:layout_height="match_parent"
     android:id="@+id/create_activity"
     tools:context=".CreateMealActivity">
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/ll_rv_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/mealPic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        <FrameLayout
         android:id="@+id/fl_add_item"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <LinearLayout
+            <LinearLayout
             android:id="@+id/ll_create_search_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:layout_margin="24sp">
             android:gravity="center">
             <EditText
                 android:id="@+id/et_item_lookup_box"
@@ -47,28 +54,14 @@
 
             </FrameLayout>
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/ll_rv_holder"
+            <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_creation_choices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_creation_choices"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"/>
-            <ImageButton
-                android:id="@+id/button_camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_menu_camera" />
-            <ImageView
-                android:id="@+id/mealPic"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
-        </LinearLayout>
+            android:visibility="invisible"/>
     </FrameLayout>
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_meal_items"
         android:layout_width="match_parent"
