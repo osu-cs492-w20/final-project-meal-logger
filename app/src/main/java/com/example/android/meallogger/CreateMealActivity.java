@@ -12,37 +12,66 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.android.meallogger.data.APIQueryTask;
+
 import com.example.android.meallogger.data.FoodId;
-import com.example.android.meallogger.data.LabelNutrients;
-import com.example.android.meallogger.data.MealItem;
-import com.example.android.meallogger.utils.UsdaAPIUtils;
 
-import java.util.ArrayList;
+import com.example.android.meallogger.data.Meal;
+import com.example.android.meallogger.data.Status;
+import com.example.android.meallogger.utils.MealCreationViewModel;
 
-public class CreateMealActivity extends AppCompatActivity implements APIQueryTask.Callback {
+import java.util.List;
+
+public class CreateMealActivity extends AppCompatActivity implements FoodidRecyclerAdapter.OnResultClickListener{
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    FrameLayout mAddItemFrame;
-    EditText mAddItemTextBox;
-    Boolean mAddModuleVisibile;
-    MenuItem mShowAddModuleButton;
+    
+    private FrameLayout mAddItemFrame;
+    private EditText mAddItemTextBox;
+    private Boolean mAddModuleVisibile;
+    private MealCreationViewModel mViewModel;
+    private RecyclerView mRvChoices;
+    private FoodidRecyclerAdapter mRvChoiceAdapter;
+    private ProgressBar mPbSearch;
+    private ImageButton mButtonAddItem;
+    private List<FoodId> mChoiceContent;
 
-    TextView mCalories;
-    TextView mProtein;
-    TextView mCarbohydrates;
+    private Meal mFinalMeal;
+
+    private RecyclerView mRvAddedItems;
+    private MealitemRecyclerAdapter mRvAddAdapter;
+
+    private TextView mCalories;
+    private TextView mProtein;
+    private TextView mCarbohydrates;
+    private TextView mFats;
+    private TextView mSfat;
+    private TextView mTfat;
+    private TextView mSugars;
+    private TextView mCalcium;
+    private TextView mIron;
+    private TextView mSodium;
+    private TextView mCholesterol;
+
+    private View mShowAddModuleButton;
+
 
 
     private static final String TAG = CreateMealActivity.class.getSimpleName();
@@ -53,23 +82,119 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
+        mRvChoices = findViewById(R.id.rv_creation_choices);
+        mRvChoices.setLayoutManager(new LinearLayoutManager(this));
+//        mRvChoices.setHasFixedSize(true);
+
+        mRvChoiceAdapter = new FoodidRecyclerAdapter(this);
+        mRvChoices.setAdapter(mRvChoiceAdapter);
+
+        mRvAddedItems = findViewById(R.id.rv_meal_items);
+        mRvAddedItems.setLayoutManager(new LinearLayoutManager(this));
+//        mRvAddedItems.setHasFixedSize(true);
+        mRvAddAdapter = new MealitemRecyclerAdapter();
+        mRvAddedItems.setAdapter(mRvAddAdapter);
+
         mAddItemFrame = findViewById(R.id.fl_add_item);
         mAddItemFrame.setVisibility(View.INVISIBLE);
         mAddItemTextBox = findViewById(R.id.et_item_lookup_box);
         mAddModuleVisibile = false;
+        mPbSearch = findViewById(R.id.pb_add_item);
+        mButtonAddItem = findViewById(R.id.button_add_item);
+
+        mFinalMeal = null;
 
         mCalories = findViewById(R.id.tv_total_calories);
         mProtein = findViewById(R.id.tv_total_protein);
         mCarbohydrates = findViewById(R.id.tv_total_carbs);
+        mFats = findViewById(R.id.tv_total_fat);
+        mSfat = findViewById(R.id.tv_total_sfat);
+        mTfat = findViewById(R.id.tv_total_tfat);
+        mSugars = findViewById(R.id.tv_total_sugar);
+        mCalcium = findViewById(R.id.tv_total_calcium);
+        mIron = findViewById(R.id.tv_total_iron);
+        mSodium = findViewById(R.id.tv_total_sodium);
+        mCholesterol = findViewById(R.id.tv_total_cholst);
 
+        mViewModel = new ViewModelProvider(this).get(MealCreationViewModel.class);
+        mViewModel.getMeal().observe(this, new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                if(meal!=null){
+                    Log.d(TAG, "!===Changed: "+meal.totalNutrients.calories.value);
+                    mFinalMeal=meal;
+                }
+            }
+        });
+        mViewModel.getFoodChoices().observe(this, new Observer<List<FoodId>>() {
+            @Override
+            public void onChanged(List<FoodId> foodIds) {
+                if(foodIds != null){
+                    Log.d(TAG, "!===Choices: "+foodIds.size());
+                    mChoiceContent = foodIds;
+                }
+            }
+        });
+        mViewModel.getStatus().observe(this, new Observer<Status>() {
+            @Override
+            public void onChanged(Status status) {
+                if(status == Status.LOADING){
+                    mAddItemTextBox.setEnabled(false);
+                    mPbSearch.setVisibility(View.VISIBLE);
+                    mButtonAddItem.setVisibility(View.INVISIBLE);
+                } else if(status == Status.SUCCESS){
+                    mAddItemTextBox.setEnabled(true);
+                    mAddItemTextBox.setVisibility(View.VISIBLE);
+                    mPbSearch.setVisibility(View.INVISIBLE);
+                    mButtonAddItem.setVisibility(View.VISIBLE);
 
-        Button searchButton = findViewById(R.id.button_add_item);
-        searchButton.setOnClickListener(new View.OnClickListener() {
+                    mRvChoiceAdapter.clear();
+
+                    if(mFinalMeal!=null){
+                        mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.value));
+                        mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.value));
+                        mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.value));
+                        mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.value));
+                        mSfat.setText(String.valueOf(mFinalMeal.totalNutrients.saturatedFat.value));
+                        mTfat.setText(String.valueOf(mFinalMeal.totalNutrients.transFat.value));
+                        mSugars.setText(String.valueOf(mFinalMeal.totalNutrients.sugars.value));
+                        mCalcium.setText(String.valueOf(mFinalMeal.totalNutrients.calcium.value));
+                        mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.value));
+                        mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.value));
+                        mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.value));
+                        // FIX THIS
+                        mRvAddAdapter.updateAdapter(mFinalMeal.items);
+                        //                        mRvAddedItems.setVisibility(View.VISIBLE);
+                    }
+                    showModule();
+                } else if(status == Status.DONE){
+                    //Hide TextBox
+                    mAddItemTextBox.setVisibility(View.INVISIBLE);
+                    mPbSearch.setVisibility(View.INVISIBLE);
+                    //Pass choice into RV
+                    Log.d(TAG, "!===mChoiceContent:"+mChoiceContent);
+
+                    mRvChoiceAdapter.updateAdapter(mChoiceContent);
+                    //Show RV
+                    mRvChoices.setVisibility(View.VISIBLE);
+                    //On Click RV finish search
+                }
+                else{
+                    mAddItemTextBox.setEnabled(true);
+                    mAddItemTextBox.setVisibility(View.VISIBLE);
+                    mPbSearch.setVisibility(View.INVISIBLE);
+                    mButtonAddItem.setVisibility(View.VISIBLE);
+                    mRvChoices.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        mButtonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String query = mAddItemTextBox.getText().toString();
                 if (!TextUtils.isEmpty(query)){
-                    addFoodItemtoMeal(query);
+                    mViewModel.addItemToMeal(query);
                 }
             }
         });
@@ -81,6 +206,17 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
                 dispatchTakePictureIntent();
             }
         });
+    }
+
+    @Override
+    public void onRVClicked(FoodId food){
+        Log.d(TAG, "!===More Details:"+food.fdcId);
+
+        mRvChoices.setVisibility(View.GONE);
+        mAddItemTextBox.setVisibility(View.VISIBLE);
+        mPbSearch.setVisibility(View.VISIBLE);
+
+        mViewModel.getItemDetails(food);
     }
 
     @Override
@@ -101,50 +237,19 @@ public class CreateMealActivity extends AppCompatActivity implements APIQueryTas
         }
     }
 
-    // 1/2 CallBack function for APIQueryTask
-    // Gets ID, fetches food from ID
-    public void handleSearchResults(ArrayList<FoodId> json){
-        showModule();
-        //For now this selects the first result avoiding the "Survey" type bc different JSON.
-        //We can change this later, so the user can choose based on brand
-        FoodId foodItem = json.get(0);
-        int i = 0;
-        while(!foodItem.dataType.equals("Branded")){
-            foodItem = json.get(i++);
-        }
-        String url = UsdaAPIUtils.buildFoodDetailsURL(foodItem.fdcId);
-        Log.d(TAG, "!===Querying:"+foodItem.fdcId+"\n"+url);
-        new APIQueryTask(this).execute(url, "detail");
-    }
-    // 2/2 CallBack function for APIQueryTask
-    // Get food details
-    public void handleDetailResults(MealItem json){
-        Log.d(TAG, "!===Food:"+json.description
-                +"\nCalories:"+json.labelNutrients.calories.value
-                +"\nServing Size:"+json.servingSize+json.servingSizeUnit);
-        mCalories.setText(String.valueOf(json.labelNutrients.calories.value));
-        mProtein.setText(String.valueOf(json.labelNutrients.protein.value));
-        mCarbohydrates.setText(String.valueOf(json.labelNutrients.carbohydrates.value));
-    }
-
-    private void addFoodItemtoMeal(String query){
-        if(query!=null){
-            String url = UsdaAPIUtils.buildFoodSearchURL(query);
-            Log.d(TAG, "!===Searching: "+query+"\n"+url);
-            new APIQueryTask(this).execute(url, "search");
-        } else{
-            Log.d(TAG, "!===Failed addFoodItem(): No Query");
-        }
-    }
-
     private void showModule (){
         mAddModuleVisibile=!mAddModuleVisibile;
         if(mAddModuleVisibile){
 //            mShowAddModuleButton.setIcon(R.drawable.ic_close_white_24dp);
+            mAddItemTextBox.setText("");
             mAddItemFrame.setVisibility(View.VISIBLE);
+            mRvAddedItems.setVisibility(View.GONE);
+
         } else{
 //            mShowAddModuleButton.setIcon(R.drawable.ic_add_white_24dp);
-            mAddItemFrame.setVisibility(View.INVISIBLE);
+            mAddItemFrame.setVisibility(View.GONE);
+            mRvAddedItems.setVisibility(View.VISIBLE);
+
         }
     }
 
