@@ -44,6 +44,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     static final int REQUEST_IMAGE_CAPTURE = 1;
     
     private FrameLayout mAddItemFrame;
+    private FrameLayout mImageFrame;
     private EditText mAddItemTextBox;
     private ImageView mImageView;
     private Boolean mAddModuleVisibile;
@@ -52,6 +53,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private FoodidRecyclerAdapter mRvChoiceAdapter;
     private ProgressBar mPbSearch;
     private ImageButton mButtonAddItem;
+    private ImageButton mCameraButton;
     private List<FoodId> mChoiceContent;
 
     private Meal mFinalMeal;
@@ -96,6 +98,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mRvAddAdapter = new MealitemRecyclerAdapter();
         mRvAddedItems.setAdapter(mRvAddAdapter);
 
+        mImageFrame = findViewById(R.id.fl_meal_image);
         mAddItemFrame = findViewById(R.id.fl_add_item);
         mAddItemFrame.setVisibility(View.INVISIBLE);
         mAddItemTextBox = findViewById(R.id.et_item_lookup_box);
@@ -167,11 +170,11 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                         mRvAddAdapter.updateAdapter(mFinalMeal.items);
                         //                        mRvAddedItems.setVisibility(View.VISIBLE);
                     }
-                    mImageView.setVisibility(View.VISIBLE);
+                    mImageFrame.setVisibility(View.VISIBLE);
                     showModule();
                 } else if(status == Status.DONE){
                     //Hide TextBox & Pic
-                    mImageView.setVisibility(View.GONE);
+                    mImageFrame.setVisibility(View.GONE);
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     //Pass choice into RV
@@ -192,6 +195,13 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             }
         });
 
+        mCameraButton = findViewById(R.id.button_camera);
+        mCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
         mButtonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -273,6 +283,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            mCameraButton.setVisibility(View.GONE);
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
