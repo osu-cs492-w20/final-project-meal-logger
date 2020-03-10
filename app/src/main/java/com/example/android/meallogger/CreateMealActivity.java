@@ -87,14 +87,12 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
         mRvChoices = findViewById(R.id.rv_creation_choices);
         mRvChoices.setLayoutManager(new LinearLayoutManager(this));
-//        mRvChoices.setHasFixedSize(true);
 
         mRvChoiceAdapter = new FoodidRecyclerAdapter(this);
         mRvChoices.setAdapter(mRvChoiceAdapter);
 
         mRvAddedItems = findViewById(R.id.rv_meal_items);
         mRvAddedItems.setLayoutManager(new LinearLayoutManager(this));
-//        mRvAddedItems.setHasFixedSize(true);
         mRvAddAdapter = new MealitemRecyclerAdapter();
         mRvAddedItems.setAdapter(mRvAddAdapter);
 
@@ -125,7 +123,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             @Override
             public void onChanged(Meal meal) {
                 if(meal!=null){
-                    Log.d(TAG, "!===Changed: "+meal.totalNutrients.calories.value);
+                    Log.d(TAG, "!===Changed: "+meal.totalNutrients.calories.amount);
                     mFinalMeal=meal;
                 }
             }
@@ -152,20 +150,20 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
 
-                    mRvChoiceAdapter.clear();
+//                    mRvChoiceAdapter.updateAdapter(null);
 
                     if(mFinalMeal!=null){
-                        mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.value));
-                        mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.value));
-                        mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.value));
-                        mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.value));
-                        mSfat.setText(String.valueOf(mFinalMeal.totalNutrients.saturatedFat.value));
-                        mTfat.setText(String.valueOf(mFinalMeal.totalNutrients.transFat.value));
-                        mSugars.setText(String.valueOf(mFinalMeal.totalNutrients.sugars.value));
-                        mCalcium.setText(String.valueOf(mFinalMeal.totalNutrients.calcium.value));
-                        mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.value));
-                        mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.value));
-                        mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.value));
+                        mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.amount));
+                        mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.amount));
+                        mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.amount));
+                        mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.amount));
+                        mSfat.setText(String.valueOf(mFinalMeal.totalNutrients.saturatedFat.amount));
+                        mTfat.setText(String.valueOf(mFinalMeal.totalNutrients.transFat.amount));
+                        mSugars.setText(String.valueOf(mFinalMeal.totalNutrients.sugars.amount));
+                        mCalcium.setText(String.valueOf(mFinalMeal.totalNutrients.calcium.amount));
+                        mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.amount));
+                        mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.amount));
+                        mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
                         // FIX THIS
                         mRvAddAdapter.updateAdapter(mFinalMeal.items);
                         //                        mRvAddedItems.setVisibility(View.VISIBLE);
@@ -247,13 +245,11 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private void showModule (){
         mAddModuleVisibile=!mAddModuleVisibile;
         if(mAddModuleVisibile){
-//            mShowAddModuleButton.setIcon(R.drawable.ic_close_white_24dp);
             mAddItemTextBox.setText("");
             mAddItemFrame.setVisibility(View.VISIBLE);
             mRvAddedItems.setVisibility(View.GONE);
 
         } else{
-//            mShowAddModuleButton.setIcon(R.drawable.ic_add_white_24dp);
             mAddItemFrame.setVisibility(View.GONE);
             mRvAddedItems.setVisibility(View.VISIBLE);
 

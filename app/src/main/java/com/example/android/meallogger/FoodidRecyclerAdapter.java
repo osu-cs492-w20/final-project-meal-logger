@@ -1,5 +1,6 @@
 package com.example.android.meallogger;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import com.example.android.meallogger.data.FoodId;
 import java.util.List;
 
 public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAdapter.ResultViewHolder> {
+    private static final String TAG = FoodidRecyclerAdapter.class.getSimpleName();
+
     List<FoodId> mFoodChoices;
 
     TextView mTvAdapterDesc;
@@ -56,13 +59,15 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
         }
     }
 
-    public void clear() {
-        int size = getItemCount();
-        if(size>0){
-            mFoodChoices.clear();
-            notifyItemRangeRemoved(0, size);
-        }
-    }
+//    public void clear() {
+//        int size = getItemCount();
+//        if(size>0){
+//            mFoodChoices.clear();
+////            notifyItemRangeRemoved(0, size);
+//            notifyDataSetChanged();
+//        }
+//        Log.d(TAG, "!==Cleared Items:"+mFoodChoices);
+//    }
 
     class ResultViewHolder extends RecyclerView.ViewHolder{
 

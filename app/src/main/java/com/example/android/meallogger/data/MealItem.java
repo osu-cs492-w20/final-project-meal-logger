@@ -9,5 +9,6 @@ public class MealItem {
     public int fdcId;
     public float servingSize;
     public String servingSizeUnit;
-    public LabelNutrients labelNutrients;
+    public List<FoodNutrient> foodNutrients;
+    public List<PortionDescription> foodPortions;
 }

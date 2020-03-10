@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Meal {
     public List<MealItem> items;
-    public LabelNutrients totalNutrients;
+    public MealNutrients totalNutrients;
 
     Meal(){
         items = new ArrayList<MealItem>();
-        totalNutrients = new LabelNutrients();
+        totalNutrients = new MealNutrients();
     }
 }

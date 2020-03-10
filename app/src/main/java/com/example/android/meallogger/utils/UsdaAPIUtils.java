@@ -3,7 +3,6 @@ package com.example.android.meallogger.utils;
 import android.net.Uri;
 
 import com.example.android.meallogger.data.FoodId;
-import com.example.android.meallogger.data.LabelNutrients;
 import com.example.android.meallogger.data.MealItem;
 import com.google.gson.Gson;
 
@@ -52,7 +51,7 @@ public class UsdaAPIUtils {
     public static MealItem parseDetailJSON(String detailJSON){
         Gson gson = new Gson();
         MealItem details = gson.fromJson(detailJSON, MealItem.class);
-        if (details != null && details.labelNutrients != null){
+        if (details != null && details.foodNutrients != null){
             return details;
         } else {
             return null;
