@@ -17,10 +17,6 @@ import java.util.List;
 public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecyclerAdapter.ResultViewHolder> {
     List<MealItem> mFoodChoices;
 
-    TextView mTvAdapterDesc;
-    EditText mEtServingAmount;
-    TextView mTvAdapterUnit;
-
     public void updateAdapter(List<MealItem> list){
         mFoodChoices = list;
         notifyItemInserted(0);
@@ -50,6 +46,9 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
 
     class ResultViewHolder extends RecyclerView.ViewHolder{
+        TextView mTvAdapterDesc;
+        EditText mEtServingAmount;
+        TextView mTvAdapterUnit;
 
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);

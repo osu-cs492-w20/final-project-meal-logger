@@ -1,9 +1,19 @@
 package com.example.android.meallogger.data;
 
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.example.android.meallogger.utils.UsdaAPIUtils;
@@ -68,6 +78,7 @@ public class MealRepository implements APIQueryTask.Callback{
         mStatus.setValue(Status.SUCCESS);
     }
 
+//    DecimalFormat df = new DecimalFormat("#####.###");
     private Meal addTotal(Meal total, List<FoodNutrient> list){
         for(int i=0; i<list.size(); i++){
             FoodNutrient ntr = list.get(i);
