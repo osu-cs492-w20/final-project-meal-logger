@@ -17,11 +17,6 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
     private static final String TAG = FoodidRecyclerAdapter.class.getSimpleName();
 
     List<FoodId> mFoodChoices;
-
-    TextView mTvAdapterDesc;
-    TextView mTvAdapterDataType;
-    TextView mTvAdapterBrandOwner;
-    TextView mTvAdapterId;
     OnResultClickListener mClickListener;
 
     interface OnResultClickListener {
@@ -59,17 +54,11 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
         }
     }
 
-//    public void clear() {
-//        int size = getItemCount();
-//        if(size>0){
-//            mFoodChoices.clear();
-////            notifyItemRangeRemoved(0, size);
-//            notifyDataSetChanged();
-//        }
-//        Log.d(TAG, "!==Cleared Items:"+mFoodChoices);
-//    }
-
     class ResultViewHolder extends RecyclerView.ViewHolder{
+        TextView mTvAdapterDesc;
+        TextView mTvAdapterDataType;
+        TextView mTvAdapterBrandOwner;
+        TextView mTvAdapterId;
 
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -91,10 +80,17 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
             mTvAdapterDesc.setText(foodId.description);
             mTvAdapterDataType.setText(foodId.dataType);
             mTvAdapterId.setText(String.valueOf(foodId.fdcId));
-            if(foodId.dataType.equals("Branded")){
-                mTvAdapterBrandOwner.setText(foodId.brandOwner);
-            } else{
-                mTvAdapterBrandOwner.setText("");
+            switch(foodId.dataType){
+                case "Branded":
+                    mTvAdapterBrandOwner.setText(foodId.brandOwner);
+                    break;
+                case "SR Legacy":
+                    mTvAdapterBrandOwner.setText(foodId.dataType);
+                    break;
+                case "Survey (FNDDS)":
+                    mTvAdapterBrandOwner.setText(foodId.dataType);
+                    break;
+                default:
             }
         }
     }

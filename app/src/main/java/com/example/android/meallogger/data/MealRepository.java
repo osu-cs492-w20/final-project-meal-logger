@@ -42,7 +42,6 @@ public class MealRepository implements APIQueryTask.Callback{
             return;
         }
         mFoodChoice.setValue(json);
-        Log.d(TAG, "!===Search Complete, Food Choices:"+mFoodChoice.getValue());
         mStatus.setValue(Status.DONE);
     }
     // 2/2 CallBack function for APIQueryTask
@@ -61,7 +60,7 @@ public class MealRepository implements APIQueryTask.Callback{
         } else{
             newValue = new Meal();
         }
-        newValue.items.add(json);
+        newValue.items.add(0, json);
 
         // Sum of meal content
         for(int i=0; i<json.foodNutrients.size(); i++){
@@ -82,7 +81,7 @@ public class MealRepository implements APIQueryTask.Callback{
                 case "Fatty acids, total trans":
                     newValue.totalNutrients.transFat.amount+=ntr.amount;
                     break;
-                case "Carbohydrates":
+                case "Carbohydrate, by difference":
                     newValue.totalNutrients.carbohydrates.amount+=ntr.amount;
                     break;
                 case "Sugars, total including NLEA":
@@ -103,19 +102,6 @@ public class MealRepository implements APIQueryTask.Callback{
                 default:
             }
         }
-
-//        newValue.totalNutrients. += json..calories.value;
-//        newValue.totalNutrients.protein.value += json.labelNutrients.protein.value;
-//        newValue.totalNutrients.carbohydrates.value += json.labelNutrients.carbohydrates.value;
-//        newValue.totalNutrients.fat.value += json.labelNutrients.fat.value;
-//        newValue.totalNutrients.saturatedFat.value += json.labelNutrients.saturatedFat.value;
-//        newValue.totalNutrients.transFat.value += json.labelNutrients.transFat.value;
-//        newValue.totalNutrients.sugars.value += json.labelNutrients.sugars.value;
-//        newValue.totalNutrients.calcium.value += json.labelNutrients.calcium.value;
-//        newValue.totalNutrients.iron.value += json.labelNutrients.iron.value;
-//        newValue.totalNutrients.sodium.value += json.labelNutrients.sodium.value;
-//        newValue.totalNutrients.cholesterol.value += json.labelNutrients.cholesterol.value;
-
         mFinalMeal.setValue(newValue);
 
         mStatus.setValue(Status.SUCCESS);
@@ -139,14 +125,5 @@ public class MealRepository implements APIQueryTask.Callback{
             Log.d(TAG, "!===Querying:"+query.fdcId+"\n"+url);
             new APIQueryTask(this).execute(url, "detail");
         }
-    }
-
-    FoodNutrient MatchAndSumNutrients(FoodNutrient toSum, List<FoodNutrient> nList){
-        int j = 0;
-        while(!nList.get(j).nutrient.name.equals(toSum.nutrient.name)){
-            j++;
-        }
-        toSum.amount += nList.get(j).amount;
-        return toSum;
     }
 }

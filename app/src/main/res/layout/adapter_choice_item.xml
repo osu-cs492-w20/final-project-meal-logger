@@ -16,7 +16,7 @@
             android:textSize="22sp"
             android:singleLine="true"
             android:layout_gravity="start"
-            android:layout_weight="1">
+            android:layout_weight="1" >
         </TextView>
         <TextView
             android:id="@+id/tv_adapter_choice_id"

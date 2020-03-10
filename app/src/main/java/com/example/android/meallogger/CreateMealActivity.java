@@ -28,6 +28,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -95,6 +96,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mRvAddedItems.setLayoutManager(new LinearLayoutManager(this));
         mRvAddAdapter = new MealitemRecyclerAdapter();
         mRvAddedItems.setAdapter(mRvAddAdapter);
+        mRvAddedItems.setItemAnimator(new DefaultItemAnimator());
 
         mImageFrame = findViewById(R.id.fl_meal_image);
         mAddItemFrame = findViewById(R.id.fl_add_item);
@@ -132,7 +134,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             @Override
             public void onChanged(List<FoodId> foodIds) {
                 if(foodIds != null){
-                    Log.d(TAG, "!===Choices: "+foodIds.size());
                     mChoiceContent = foodIds;
                 }
             }
@@ -164,7 +165,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                         mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.amount));
                         mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.amount));
                         mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
-                        // FIX THIS
+
+                        mRvAddedItems.scrollToPosition(0);
                         mRvAddAdapter.updateAdapter(mFinalMeal.items);
                         //                        mRvAddedItems.setVisibility(View.VISIBLE);
                     }
@@ -176,11 +178,10 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     //Pass choice into RV
-                    Log.d(TAG, "!===mChoiceContent:"+mChoiceContent);
-
-                    mRvChoiceAdapter.updateAdapter(mChoiceContent);
                     //Show RV
                     mRvChoices.setVisibility(View.VISIBLE);
+                    mRvChoiceAdapter.updateAdapter(mChoiceContent);
+
                     //On Click RV finish search
                 }
                 else{
@@ -247,12 +248,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         if(mAddModuleVisibile){
             mAddItemTextBox.setText("");
             mAddItemFrame.setVisibility(View.VISIBLE);
-            mRvAddedItems.setVisibility(View.GONE);
-
         } else{
             mAddItemFrame.setVisibility(View.GONE);
-            mRvAddedItems.setVisibility(View.VISIBLE);
-
         }
     }
 
