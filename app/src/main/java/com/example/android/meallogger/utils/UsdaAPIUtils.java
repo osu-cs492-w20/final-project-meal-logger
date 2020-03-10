@@ -1,16 +1,17 @@
 package com.example.android.meallogger.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.android.meallogger.data.FoodId;
-import com.example.android.meallogger.data.LabelNutrients;
 import com.example.android.meallogger.data.MealItem;
+import com.example.android.meallogger.data.MealRepository;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 public class UsdaAPIUtils {
-
+    private static final String TAG = UsdaAPIUtils.class.getSimpleName();
     public static final String USDA_BASE_URL = "https://api.nal.usda.gov/fdc/v1/";
     public static final String USDA_API_KEY = "J8vThKbo9oxo6LktY1AEVXOTSvWRLMbj3gkjM1oV";
 
@@ -52,7 +53,7 @@ public class UsdaAPIUtils {
     public static MealItem parseDetailJSON(String detailJSON){
         Gson gson = new Gson();
         MealItem details = gson.fromJson(detailJSON, MealItem.class);
-        if (details != null && details.labelNutrients != null){
+        if (details != null && details.foodNutrients != null){
             return details;
         } else {
             return null;

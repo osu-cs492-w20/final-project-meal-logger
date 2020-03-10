@@ -17,13 +17,9 @@ import java.util.List;
 public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecyclerAdapter.ResultViewHolder> {
     List<MealItem> mFoodChoices;
 
-    TextView mTvAdapterDesc;
-    EditText mEtServingAmount;
-    TextView mTvAdapterUnit;
-
     public void updateAdapter(List<MealItem> list){
         mFoodChoices = list;
-        notifyDataSetChanged();
+        notifyItemInserted(0);
     }
 
     @NonNull
@@ -50,6 +46,9 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
 
     class ResultViewHolder extends RecyclerView.ViewHolder{
+        TextView mTvAdapterDesc;
+        EditText mEtServingAmount;
+        TextView mTvAdapterUnit;
 
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,6 +60,12 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
         public void bind(MealItem item) {
             mTvAdapterDesc.setText(item.description);
             mTvAdapterUnit.setText(item.servingSizeUnit);
+        }
+
+        public void remove() {
+            int position  = getAdapterPosition();
+            mFoodChoices.remove(position);
+            notifyItemRemoved(position);
         }
     }
 }

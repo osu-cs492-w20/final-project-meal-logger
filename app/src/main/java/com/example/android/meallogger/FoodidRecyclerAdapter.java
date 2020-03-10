@@ -1,5 +1,6 @@
 package com.example.android.meallogger;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,9 @@ import com.example.android.meallogger.data.FoodId;
 import java.util.List;
 
 public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAdapter.ResultViewHolder> {
-    List<FoodId> mFoodChoices;
+    private static final String TAG = FoodidRecyclerAdapter.class.getSimpleName();
 
-    TextView mTvAdapterDesc;
-    TextView mTvAdapterDataType;
-    TextView mTvAdapterBrandOwner;
-    TextView mTvAdapterId;
+    List<FoodId> mFoodChoices;
     OnResultClickListener mClickListener;
 
     interface OnResultClickListener {
@@ -56,15 +54,11 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
         }
     }
 
-    public void clear() {
-        int size = getItemCount();
-        if(size>0){
-            mFoodChoices.clear();
-            notifyItemRangeRemoved(0, size);
-        }
-    }
-
     class ResultViewHolder extends RecyclerView.ViewHolder{
+        TextView mTvAdapterDesc;
+        TextView mTvAdapterDataType;
+        TextView mTvAdapterBrandOwner;
+        TextView mTvAdapterId;
 
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,10 +80,17 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
             mTvAdapterDesc.setText(foodId.description);
             mTvAdapterDataType.setText(foodId.dataType);
             mTvAdapterId.setText(String.valueOf(foodId.fdcId));
-            if(foodId.dataType.equals("Branded")){
-                mTvAdapterBrandOwner.setText(foodId.brandOwner);
-            } else{
-                mTvAdapterBrandOwner.setText("");
+            switch(foodId.dataType){
+                case "Branded":
+                    mTvAdapterBrandOwner.setText(foodId.brandOwner);
+                    break;
+                case "SR Legacy":
+                    mTvAdapterBrandOwner.setText(foodId.dataType);
+                    break;
+                case "Survey (FNDDS)":
+                    mTvAdapterBrandOwner.setText(foodId.dataType);
+                    break;
+                default:
             }
         }
     }

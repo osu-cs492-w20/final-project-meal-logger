@@ -28,6 +28,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,7 +79,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
     private static final String TAG = CreateMealActivity.class.getSimpleName();
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,16 +88,15 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
         mRvChoices = findViewById(R.id.rv_creation_choices);
         mRvChoices.setLayoutManager(new LinearLayoutManager(this));
-//        mRvChoices.setHasFixedSize(true);
 
         mRvChoiceAdapter = new FoodidRecyclerAdapter(this);
         mRvChoices.setAdapter(mRvChoiceAdapter);
 
         mRvAddedItems = findViewById(R.id.rv_meal_items);
         mRvAddedItems.setLayoutManager(new LinearLayoutManager(this));
-//        mRvAddedItems.setHasFixedSize(true);
         mRvAddAdapter = new MealitemRecyclerAdapter();
         mRvAddedItems.setAdapter(mRvAddAdapter);
+        mRvAddedItems.setItemAnimator(new DefaultItemAnimator());
 
         mImageFrame = findViewById(R.id.fl_meal_image);
         mAddItemFrame = findViewById(R.id.fl_add_item);
@@ -125,7 +125,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             @Override
             public void onChanged(Meal meal) {
                 if(meal!=null){
-                    Log.d(TAG, "!===Changed: "+meal.totalNutrients.calories.value);
+                    Log.d(TAG, "!===Changed: "+meal.totalNutrients.calories.amount);
                     mFinalMeal=meal;
                 }
             }
@@ -134,7 +134,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             @Override
             public void onChanged(List<FoodId> foodIds) {
                 if(foodIds != null){
-                    Log.d(TAG, "!===Choices: "+foodIds.size());
                     mChoiceContent = foodIds;
                 }
             }
@@ -152,24 +151,12 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
 
-                    mRvChoiceAdapter.clear();
-
                     if(mFinalMeal!=null){
-                        mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.value));
-                        mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.value));
-                        mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.value));
-                        mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.value));
-                        mSfat.setText(String.valueOf(mFinalMeal.totalNutrients.saturatedFat.value));
-                        mTfat.setText(String.valueOf(mFinalMeal.totalNutrients.transFat.value));
-                        mSugars.setText(String.valueOf(mFinalMeal.totalNutrients.sugars.value));
-                        mCalcium.setText(String.valueOf(mFinalMeal.totalNutrients.calcium.value));
-                        mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.value));
-                        mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.value));
-                        mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.value));
-                        // FIX THIS
+                        updateNutrientDisplay();
+                        mRvAddedItems.scrollToPosition(0);
                         mRvAddAdapter.updateAdapter(mFinalMeal.items);
-                        //                        mRvAddedItems.setVisibility(View.VISIBLE);
                     }
+
                     mImageFrame.setVisibility(View.VISIBLE);
                     showModule();
                 } else if(status == Status.DONE){
@@ -178,19 +165,17 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     //Pass choice into RV
-                    Log.d(TAG, "!===mChoiceContent:"+mChoiceContent);
-
-                    mRvChoiceAdapter.updateAdapter(mChoiceContent);
                     //Show RV
                     mRvChoices.setVisibility(View.VISIBLE);
+                    mRvChoiceAdapter.updateAdapter(mChoiceContent);
+
                     //On Click RV finish search
-                }
-                else{
+                } else{
                     mAddItemTextBox.setEnabled(true);
                     mAddItemTextBox.setVisibility(View.VISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
-                    mRvChoices.setVisibility(View.INVISIBLE);
+                    mRvChoices.setVisibility(View.GONE);
                 }
             }
         });
@@ -211,6 +196,24 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                 }
             }
         });
+
+        ItemTouchHelper.Callback SimpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                mViewModel.remove(viewHolder.getAdapterPosition());
+                ((MealitemRecyclerAdapter.ResultViewHolder)viewHolder).remove();
+                updateNutrientDisplay();
+            }
+        };
+
+
+        ItemTouchHelper helper = new ItemTouchHelper(SimpleCallback);
+        helper.attachToRecyclerView(mRvAddedItems);
     }
 
     @Override
@@ -247,16 +250,10 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private void showModule (){
         mAddModuleVisibile=!mAddModuleVisibile;
         if(mAddModuleVisibile){
-//            mShowAddModuleButton.setIcon(R.drawable.ic_close_white_24dp);
             mAddItemTextBox.setText("");
             mAddItemFrame.setVisibility(View.VISIBLE);
-            mRvAddedItems.setVisibility(View.GONE);
-
         } else{
-//            mShowAddModuleButton.setIcon(R.drawable.ic_add_white_24dp);
             mAddItemFrame.setVisibility(View.GONE);
-            mRvAddedItems.setVisibility(View.VISIBLE);
-
         }
     }
 
@@ -289,5 +286,19 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             mImageView.setImageBitmap(imageBitmap);
         }
         super.onActivityResult(requestCode,resultCode,data);
+    }
+
+    private void updateNutrientDisplay(){
+        mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.amount));
+        mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.amount));
+        mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.amount));
+        mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.amount));
+        mSfat.setText(String.valueOf(mFinalMeal.totalNutrients.saturatedFat.amount));
+        mTfat.setText(String.valueOf(mFinalMeal.totalNutrients.transFat.amount));
+        mSugars.setText(String.valueOf(mFinalMeal.totalNutrients.sugars.amount));
+        mCalcium.setText(String.valueOf(mFinalMeal.totalNutrients.calcium.amount));
+        mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.amount));
+        mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.amount));
+        mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
     }
 }
