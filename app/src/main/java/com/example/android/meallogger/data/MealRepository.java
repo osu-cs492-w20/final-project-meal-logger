@@ -14,7 +14,8 @@ public class MealRepository implements APIQueryTask.Callback{
     private static final String TAG = MealRepository.class.getSimpleName();
     private MutableLiveData<Meal> mFinalMeal;
     private MutableLiveData<Status> mStatus;
-    private MutableLiveData<List<FoodId>> mFoodChoice;
+    private MutableLiveData<ArrayList<FoodId>> mFoodChoice;
+
 
     public MealRepository(){
         mFinalMeal = new MutableLiveData<>();
@@ -31,7 +32,7 @@ public class MealRepository implements APIQueryTask.Callback{
     public LiveData<Status> getStatus(){
         return mStatus;
     }
-    public LiveData<List<FoodId>> getChoices(){ return mFoodChoice; }
+    public MutableLiveData<ArrayList<FoodId>> getChoices(){ return mFoodChoice; }
 
     // 1/2 CallBack function for APIQueryTask
     // Gets ID, fetches food from ID
@@ -48,7 +49,6 @@ public class MealRepository implements APIQueryTask.Callback{
     // Get food details
     public void handleDetailResults(MealItem json){
         mFoodChoice.setValue(null);
-
         Log.d(TAG, "!===Food:"+json.description
                 +"\nCalories:"+json.foodNutrients.get(2).amount+json.foodNutrients.get(2).nutrient.unitName
                 +"\nServing Size:"+json.servingSize+json.servingSizeUnit);
@@ -56,56 +56,103 @@ public class MealRepository implements APIQueryTask.Callback{
         Meal newValue;
         if(mFinalMeal.getValue()!=null){
             newValue = mFinalMeal.getValue();
-
         } else{
             newValue = new Meal();
         }
         newValue.items.add(0, json);
 
         // Sum of meal content
-        for(int i=0; i<json.foodNutrients.size(); i++){
-            FoodNutrient ntr = json.foodNutrients.get(i);
+        newValue = addTotal(newValue, json.foodNutrients);
+
+        mFinalMeal.setValue(newValue);
+        mStatus.setValue(Status.SUCCESS);
+    }
+
+    private Meal addTotal(Meal total, List<FoodNutrient> list){
+        for(int i=0; i<list.size(); i++){
+            FoodNutrient ntr = list.get(i);
             switch(ntr.nutrient.name){
                 case "Energy":
-                    newValue.totalNutrients.calories.amount+=ntr.amount;
+                    total.totalNutrients.calories.amount += ntr.amount;
                     break;
                 case "Protein":
-                    newValue.totalNutrients.protein.amount+=ntr.amount;
+                    total.totalNutrients.protein.amount += ntr.amount;
                     break;
                 case "Total lipid (fat)":
-                    newValue.totalNutrients.fat.amount+=ntr.amount;
+                    total.totalNutrients.fat.amount += ntr.amount;
                     break;
                 case "Fatty acids, total saturated":
-                    newValue.totalNutrients.saturatedFat.amount+=ntr.amount;
+                    total.totalNutrients.saturatedFat.amount += ntr.amount;
                     break;
                 case "Fatty acids, total trans":
-                    newValue.totalNutrients.transFat.amount+=ntr.amount;
+                    total.totalNutrients.transFat.amount += ntr.amount;
                     break;
                 case "Carbohydrate, by difference":
-                    newValue.totalNutrients.carbohydrates.amount+=ntr.amount;
+                    total.totalNutrients.carbohydrates.amount += ntr.amount;
                     break;
                 case "Sugars, total including NLEA":
-                    newValue.totalNutrients.sugars.amount+=ntr.amount;
+                    total.totalNutrients.sugars.amount += ntr.amount;
                     break;
                 case "Iron, Fe":
-                    newValue.totalNutrients.iron.amount+=ntr.amount;
+                    total.totalNutrients.iron.amount += ntr.amount;
                     break;
                 case "Sodium, Na":
-                    newValue.totalNutrients.sodium.amount+=ntr.amount;
+                    total.totalNutrients.sodium.amount += ntr.amount;
                     break;
                 case "Calcium, Ca":
-                    newValue.totalNutrients.calcium.amount+=ntr.amount;
+                    total.totalNutrients.calcium.amount += ntr.amount;
                     break;
                 case "Cholesterol":
-                    newValue.totalNutrients.cholesterol.amount+=ntr.amount;
+                    total.totalNutrients.cholesterol.amount += ntr.amount;
                     break;
                 default:
             }
         }
-        mFinalMeal.setValue(newValue);
-
-        mStatus.setValue(Status.SUCCESS);
+        return total;
     }
+    private Meal subTotal(Meal total, List<FoodNutrient> list){
+        for(int i=0; i<list.size(); i++){
+            FoodNutrient ntr = list.get(i);
+            switch(ntr.nutrient.name){
+                case "Energy":
+                    total.totalNutrients.calories.amount -= ntr.amount;
+                    break;
+                case "Protein":
+                    total.totalNutrients.protein.amount -= ntr.amount;
+                    break;
+                case "Total lipid (fat)":
+                    total.totalNutrients.fat.amount -= ntr.amount;
+                    break;
+                case "Fatty acids, total saturated":
+                    total.totalNutrients.saturatedFat.amount -= ntr.amount;
+                    break;
+                case "Fatty acids, total trans":
+                    total.totalNutrients.transFat.amount -= ntr.amount;
+                    break;
+                case "Carbohydrate, by difference":
+                    total.totalNutrients.carbohydrates.amount -= ntr.amount;
+                    break;
+                case "Sugars, total including NLEA":
+                    total.totalNutrients.sugars.amount -= ntr.amount;
+                    break;
+                case "Iron, Fe":
+                    total.totalNutrients.iron.amount -= ntr.amount;
+                    break;
+                case "Sodium, Na":
+                    total.totalNutrients.sodium.amount -= ntr.amount;
+                    break;
+                case "Calcium, Ca":
+                    total.totalNutrients.calcium.amount -= ntr.amount;
+                    break;
+                case "Cholesterol":
+                    total.totalNutrients.cholesterol.amount -= ntr.amount;
+                    break;
+                default:
+            }
+        }
+        return total;
+    }
+
 
     public void addFoodItemtoMeal(String query){
         if(query!=null){
@@ -117,6 +164,21 @@ public class MealRepository implements APIQueryTask.Callback{
             mStatus.setValue(Status.ERROR);
             Log.d(TAG, "!===Failed addFoodItem(): No Query");
         }
+    }
+
+    public void removeFoodItemfromMeal(int index){
+        Meal updateMeal = mFinalMeal.getValue();
+
+//        for(int r=0; r < updateMeal.items.size(); r++){
+        Log.d(TAG, "!===Removing:"+index);
+
+        MealItem removeItem = updateMeal.items.get(index);
+//            if(removeItem.fdcId==query){
+//                updateMeal.items.remove(r);
+                mFinalMeal.setValue(subTotal(updateMeal, removeItem.foodNutrients));
+//                return;
+//            }
+//        }
     }
 
     public void lookupFoodDetails(FoodId query){

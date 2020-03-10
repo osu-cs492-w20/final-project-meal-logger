@@ -62,5 +62,11 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
             mTvAdapterDesc.setText(item.description);
             mTvAdapterUnit.setText(item.servingSizeUnit);
         }
+
+        public void remove() {
+            int position  = getAdapterPosition();
+            mFoodChoices.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 }

@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,7 +78,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private View mShowAddModuleButton;
 
     private static final String TAG = CreateMealActivity.class.getSimpleName();
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,25 +151,12 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
 
-//                    mRvChoiceAdapter.updateAdapter(null);
-
                     if(mFinalMeal!=null){
-                        mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.amount));
-                        mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.amount));
-                        mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.amount));
-                        mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.amount));
-                        mSfat.setText(String.valueOf(mFinalMeal.totalNutrients.saturatedFat.amount));
-                        mTfat.setText(String.valueOf(mFinalMeal.totalNutrients.transFat.amount));
-                        mSugars.setText(String.valueOf(mFinalMeal.totalNutrients.sugars.amount));
-                        mCalcium.setText(String.valueOf(mFinalMeal.totalNutrients.calcium.amount));
-                        mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.amount));
-                        mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.amount));
-                        mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
-
+                        updateNutrientDisplay();
                         mRvAddedItems.scrollToPosition(0);
                         mRvAddAdapter.updateAdapter(mFinalMeal.items);
-                        //                        mRvAddedItems.setVisibility(View.VISIBLE);
                     }
+
                     mImageFrame.setVisibility(View.VISIBLE);
                     showModule();
                 } else if(status == Status.DONE){
@@ -183,13 +170,12 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mRvChoiceAdapter.updateAdapter(mChoiceContent);
 
                     //On Click RV finish search
-                }
-                else{
+                } else{
                     mAddItemTextBox.setEnabled(true);
                     mAddItemTextBox.setVisibility(View.VISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
-                    mRvChoices.setVisibility(View.INVISIBLE);
+                    mRvChoices.setVisibility(View.GONE);
                 }
             }
         });
@@ -210,6 +196,24 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                 }
             }
         });
+
+        ItemTouchHelper.Callback SimpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                mViewModel.remove(viewHolder.getAdapterPosition());
+                ((MealitemRecyclerAdapter.ResultViewHolder)viewHolder).remove();
+                updateNutrientDisplay();
+            }
+        };
+
+
+        ItemTouchHelper helper = new ItemTouchHelper(SimpleCallback);
+        helper.attachToRecyclerView(mRvAddedItems);
     }
 
     @Override
@@ -282,5 +286,19 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             mImageView.setImageBitmap(imageBitmap);
         }
         super.onActivityResult(requestCode,resultCode,data);
+    }
+
+    private void updateNutrientDisplay(){
+        mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.amount));
+        mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.amount));
+        mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.amount));
+        mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.amount));
+        mSfat.setText(String.valueOf(mFinalMeal.totalNutrients.saturatedFat.amount));
+        mTfat.setText(String.valueOf(mFinalMeal.totalNutrients.transFat.amount));
+        mSugars.setText(String.valueOf(mFinalMeal.totalNutrients.sugars.amount));
+        mCalcium.setText(String.valueOf(mFinalMeal.totalNutrients.calcium.amount));
+        mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.amount));
+        mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.amount));
+        mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
     }
 }
