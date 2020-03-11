@@ -33,6 +33,8 @@ public class MealCreationViewModel extends ViewModel {
 
     public void remove(int index) { mRepository.removeFoodItemfromMeal(index); }
 
+    public void rename(String name) { mRepository.updateName(name); }
+
     public LiveData<Meal> getMeal(){ return mMeal; }
     public LiveData<Status> getStatus(){ return mLoadingStatus; }
     public LiveData<ArrayList<FoodId>> getFoodChoices(){ return mFoodChoices; }
