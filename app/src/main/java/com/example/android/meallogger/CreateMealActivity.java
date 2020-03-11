@@ -46,20 +46,24 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     static final int REQUEST_IMAGE_CAPTURE = 1;
     
     private FrameLayout mAddItemFrame;
+    private FrameLayout mTitleFrame;
     private FrameLayout mImageFrame;
     private EditText mAddItemTextBox;
+    private EditText mTitleTextBox;
     private ImageView mImageView;
+    private ImageView mSearchIcon;
     private Boolean mAddModuleVisibile;
     private MealCreationViewModel mViewModel;
     private RecyclerView mRvChoices;
     private FoodidRecyclerAdapter mRvChoiceAdapter;
     private ProgressBar mPbSearch;
     private ImageButton mButtonAddItem;
+    private ImageButton mButtonTitleCfrm;
     private ImageButton mCameraButton;
     private List<FoodId> mChoiceContent;
 
     private Meal mFinalMeal;
-
+    private TextView mTitle;
     private RecyclerView mRvAddedItems;
     private MealitemRecyclerAdapter mRvAddAdapter;
 
@@ -100,14 +104,19 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
         mImageFrame = findViewById(R.id.fl_meal_image);
         mAddItemFrame = findViewById(R.id.fl_add_item);
-        mAddItemFrame.setVisibility(View.INVISIBLE);
+        mAddItemFrame.setVisibility(View.GONE);
+        mTitleFrame = findViewById(R.id.fl_title_meal);
         mAddItemTextBox = findViewById(R.id.et_item_lookup_box);
+        mTitleTextBox = findViewById(R.id.et_title_box);
+        // Initial SUCCESS status change will switch this to false
         mAddModuleVisibile = false;
         mPbSearch = findViewById(R.id.pb_add_item);
         mButtonAddItem = findViewById(R.id.button_add_item);
+        mButtonTitleCfrm = findViewById(R.id.button_title_confirm);
+        mSearchIcon = findViewById(R.id.search_foodid_icon);
 
         mFinalMeal = null;
-
+        mTitle = findViewById(R.id.tv_meal_title);
         mCalories = findViewById(R.id.tv_total_calories);
         mProtein = findViewById(R.id.tv_total_protein);
         mCarbohydrates = findViewById(R.id.tv_total_carbs);
@@ -125,8 +134,10 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             @Override
             public void onChanged(Meal meal) {
                 if(meal!=null){
-                    Log.d(TAG, "!===Changed: "+meal.totalNutrients.calories.amount);
                     mFinalMeal=meal;
+                    if(mFinalMeal.title.length()>0){
+                        mTitle.setText(mFinalMeal.title);
+                    }
                 }
             }
         });
@@ -150,26 +161,18 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mAddItemTextBox.setVisibility(View.VISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
-
-                    if(mFinalMeal!=null){
-                        updateNutrientDisplay();
-                        mRvAddedItems.scrollToPosition(0);
-                        mRvAddAdapter.updateAdapter(mFinalMeal.items);
-                    }
-
-                    mImageFrame.setVisibility(View.VISIBLE);
                     showModule();
+                    mRvAddedItems.scrollToPosition(0);
+                    mRvAddAdapter.updateAdapter(mFinalMeal.items);
+                    updateNutrientDisplay();
                 } else if(status == Status.DONE){
                     //Hide TextBox & Pic
-                    mImageFrame.setVisibility(View.GONE);
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
+                    //Show
                     //Pass choice into RV
-                    //Show RV
                     mRvChoices.setVisibility(View.VISIBLE);
                     mRvChoiceAdapter.updateAdapter(mChoiceContent);
-
-                    //On Click RV finish search
                 } else{
                     mAddItemTextBox.setEnabled(true);
                     mAddItemTextBox.setVisibility(View.VISIBLE);
@@ -196,6 +199,26 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                 }
             }
         });
+        mButtonTitleCfrm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newTitle = mTitleTextBox.getText().toString();
+                if(newTitle!=""){
+                    mViewModel.rename(newTitle);
+                }
+                mTitleTextBox.setVisibility(View.INVISIBLE);
+                mButtonTitleCfrm.setVisibility(View.INVISIBLE);
+                mTitle.setVisibility(View.VISIBLE);
+            }
+        });
+        mTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTitle.setVisibility(View.INVISIBLE);
+                mTitleTextBox.setVisibility(View.VISIBLE);
+                mButtonTitleCfrm.setVisibility(View.VISIBLE);
+            }
+        });
 
         ItemTouchHelper.Callback SimpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -218,12 +241,9 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
     @Override
     public void onRVClicked(FoodId food){
-        Log.d(TAG, "!===More Details:"+food.fdcId);
-
         mRvChoices.setVisibility(View.GONE);
         mAddItemTextBox.setVisibility(View.VISIBLE);
         mPbSearch.setVisibility(View.VISIBLE);
-
         mViewModel.getItemDetails(food);
     }
 
@@ -251,9 +271,23 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mAddModuleVisibile=!mAddModuleVisibile;
         if(mAddModuleVisibile){
             mAddItemTextBox.setText("");
+            mTitleFrame.setVisibility(View.GONE);
+            mImageView.setVisibility(View.INVISIBLE);
+            if(mCameraButton.getVisibility() != View.GONE){
+                mCameraButton.setVisibility(View.INVISIBLE);
+            }
+//            mShowAddModuleButton.setVisibility(View.INVISIBLE);
+            mSearchIcon.setVisibility(View.VISIBLE);
             mAddItemFrame.setVisibility(View.VISIBLE);
         } else{
             mAddItemFrame.setVisibility(View.GONE);
+            mSearchIcon.setVisibility(View.INVISIBLE);
+            if(mCameraButton.getVisibility() != View.GONE){
+                mCameraButton.setVisibility(View.VISIBLE);
+            }
+//            mShowAddModuleButton.setVisibility(View.VISIBLE);
+            mImageView.setVisibility(View.VISIBLE);
+            mTitleFrame.setVisibility(View.VISIBLE);
         }
     }
 
@@ -289,7 +323,10 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     }
 
     private void updateNutrientDisplay(){
+        TextView unit;
         mCalories.setText(String.valueOf(mFinalMeal.totalNutrients.calories.amount));
+        unit = findViewById(R.id.tv_total_unit_calories);
+        unit.setText(mFinalMeal.totalNutrients.calories.unit);
         mProtein.setText(String.valueOf(mFinalMeal.totalNutrients.protein.amount));
         mCarbohydrates.setText(String.valueOf(mFinalMeal.totalNutrients.carbohydrates.amount));
         mFats.setText(String.valueOf(mFinalMeal.totalNutrients.fat.amount));

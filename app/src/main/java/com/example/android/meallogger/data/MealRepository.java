@@ -29,10 +29,10 @@ public class MealRepository implements APIQueryTask.Callback{
 
     public MealRepository(){
         mFinalMeal = new MutableLiveData<>();
-        mFinalMeal.setValue(null);
+        mFinalMeal.setValue(new Meal());
 
         mStatus = new MutableLiveData<>();
-        mStatus.setValue(Status.SUCCESS);
+        mStatus.setValue(Status.ERROR);
 
         mFoodChoice = new MutableLiveData<>();
         mFoodChoice.setValue(null);
@@ -60,15 +60,11 @@ public class MealRepository implements APIQueryTask.Callback{
     public void handleDetailResults(MealItem json){
         mFoodChoice.setValue(null);
         Log.d(TAG, "!===Food:"+json.description
-                +"\nCalories:"+json.foodNutrients.get(2).amount+json.foodNutrients.get(2).nutrient.unitName
+                +"\nCalories:"+json.foodNutrients.get(3).amount+json.foodNutrients.get(2).nutrient.unitName
                 +"\nServing Size:"+json.servingSize+json.servingSizeUnit);
 
         Meal newValue;
-        if(mFinalMeal.getValue()!=null){
-            newValue = mFinalMeal.getValue();
-        } else{
-            newValue = new Meal();
-        }
+        newValue = mFinalMeal.getValue();
         newValue.items.add(0, json);
 
         // Sum of meal content
@@ -78,43 +74,55 @@ public class MealRepository implements APIQueryTask.Callback{
         mStatus.setValue(Status.SUCCESS);
     }
 
-//    DecimalFormat df = new DecimalFormat("#####.###");
     private Meal addTotal(Meal total, List<FoodNutrient> list){
         for(int i=0; i<list.size(); i++){
             FoodNutrient ntr = list.get(i);
+            int safety;
+            ntr.amount = ((float) ((int)(ntr.amount * 1000)) )/1000;
             switch(ntr.nutrient.name){
                 case "Energy":
-                    total.totalNutrients.calories.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.calories.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.calories.amount = (float)safety/1000;
                     break;
                 case "Protein":
-                    total.totalNutrients.protein.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.protein.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.protein.amount = (float)safety/1000;
                     break;
                 case "Total lipid (fat)":
-                    total.totalNutrients.fat.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.fat.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.fat.amount = (float)safety/1000;
                     break;
                 case "Fatty acids, total saturated":
-                    total.totalNutrients.saturatedFat.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.saturatedFat.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.saturatedFat.amount = (float)safety/1000;
                     break;
                 case "Fatty acids, total trans":
-                    total.totalNutrients.transFat.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.transFat.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.transFat.amount = (float)safety/1000;
                     break;
                 case "Carbohydrate, by difference":
-                    total.totalNutrients.carbohydrates.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.carbohydrates.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.carbohydrates.amount = (float)safety/1000;
                     break;
                 case "Sugars, total including NLEA":
-                    total.totalNutrients.sugars.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.sugars.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.sugars.amount = (float)safety/1000;
                     break;
                 case "Iron, Fe":
-                    total.totalNutrients.iron.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.iron.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.iron.amount = (float)safety/1000;
                     break;
                 case "Sodium, Na":
-                    total.totalNutrients.sodium.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.sodium.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.sodium.amount = (float)safety/1000;
                     break;
                 case "Calcium, Ca":
-                    total.totalNutrients.calcium.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.calcium.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.calcium.amount = (float)safety/1000;
                     break;
                 case "Cholesterol":
-                    total.totalNutrients.cholesterol.amount += ntr.amount;
+                    safety = (int)(total.totalNutrients.cholesterol.amount*1000) + (int)(ntr.amount * 1000);
+                    total.totalNutrients.cholesterol.amount = (float)safety/1000;
                     break;
                 default:
             }
@@ -124,39 +132,51 @@ public class MealRepository implements APIQueryTask.Callback{
     private Meal subTotal(Meal total, List<FoodNutrient> list){
         for(int i=0; i<list.size(); i++){
             FoodNutrient ntr = list.get(i);
+            int safety;
             switch(ntr.nutrient.name){
                 case "Energy":
-                    total.totalNutrients.calories.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.calories.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.calories.amount = (float)safety/1000;
                     break;
                 case "Protein":
-                    total.totalNutrients.protein.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.protein.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.protein.amount = (float)safety/1000;
                     break;
                 case "Total lipid (fat)":
-                    total.totalNutrients.fat.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.fat.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.fat.amount = (float)safety/1000;
                     break;
                 case "Fatty acids, total saturated":
-                    total.totalNutrients.saturatedFat.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.saturatedFat.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.saturatedFat.amount = (float)safety/1000;
                     break;
                 case "Fatty acids, total trans":
-                    total.totalNutrients.transFat.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.transFat.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.transFat.amount = (float)safety/1000;
                     break;
                 case "Carbohydrate, by difference":
-                    total.totalNutrients.carbohydrates.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.carbohydrates.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.carbohydrates.amount = (float)safety/1000;
                     break;
                 case "Sugars, total including NLEA":
-                    total.totalNutrients.sugars.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.sugars.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.sugars.amount = (float)safety/1000;
                     break;
                 case "Iron, Fe":
-                    total.totalNutrients.iron.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.iron.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.iron.amount = (float)safety/1000;
                     break;
                 case "Sodium, Na":
-                    total.totalNutrients.sodium.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.sodium.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.sodium.amount = (float)safety/1000;
                     break;
                 case "Calcium, Ca":
-                    total.totalNutrients.calcium.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.calcium.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.calcium.amount = (float)safety/1000;
                     break;
                 case "Cholesterol":
-                    total.totalNutrients.cholesterol.amount -= ntr.amount;
+                    safety = (int)(total.totalNutrients.cholesterol.amount*1000) - (int)(ntr.amount * 1000);
+                    total.totalNutrients.cholesterol.amount = (float)safety/1000;
                     break;
                 default:
             }
@@ -181,12 +201,13 @@ public class MealRepository implements APIQueryTask.Callback{
         Meal updateMeal = mFinalMeal.getValue();
 
 //        for(int r=0; r < updateMeal.items.size(); r++){
-        Log.d(TAG, "!===Removing:"+index);
 
         MealItem removeItem = updateMeal.items.get(index);
+        Log.d(TAG, "!===Removing:"+removeItem.description);
+
 //            if(removeItem.fdcId==query){
 //                updateMeal.items.remove(r);
-                mFinalMeal.setValue(subTotal(updateMeal, removeItem.foodNutrients));
+        mFinalMeal.setValue(subTotal(updateMeal, removeItem.foodNutrients));
 //                return;
 //            }
 //        }
@@ -198,5 +219,11 @@ public class MealRepository implements APIQueryTask.Callback{
             Log.d(TAG, "!===Querying:"+query.fdcId+"\n"+url);
             new APIQueryTask(this).execute(url, "detail");
         }
+    }
+
+    public void updateName(String rename){
+        Meal newValue = mFinalMeal.getValue();
+        newValue.title = rename;
+        mFinalMeal.setValue(newValue);
     }
 }
