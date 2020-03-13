@@ -22,4 +22,7 @@ public class MealData {
     public String totalIron;
     public String totalCalories;
     public String foodsList;
+    public String date;
+    public String time;
+    public String type;
 }

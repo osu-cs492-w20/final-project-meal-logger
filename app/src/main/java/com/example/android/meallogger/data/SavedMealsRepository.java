@@ -2,13 +2,21 @@ package com.example.android.meallogger.data;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import java.util.List;
 
 public class SavedMealsRepository {
     private SavedMealsDAO mSavedMealsDao;
+    private MutableLiveData<Status> mLoadingStatus;
+
 
     public SavedMealsRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         mSavedMealsDao = db.savedMealsDao();
+        mLoadingStatus = new MutableLiveData<>();
+        mLoadingStatus.setValue(Status.SUCCESS);
     }
 
     private static class InsertMealAsyncTask
@@ -47,5 +55,17 @@ public class SavedMealsRepository {
 
     public void deleteMeal(MealData repo) {
         new DeleteMealAsyncTask(mSavedMealsDao).execute(repo);
+    }
+
+    public LiveData<List<MealData>> getAllMeals() {
+        return mSavedMealsDao.getAllMeals();
+    }
+
+    public LiveData<MealData> getMealByName(String name) {
+        return mSavedMealsDao.getMealByName(name);
+    }
+
+    public LiveData<Status> getLoadingStatus() {
+        return mLoadingStatus;
     }
 }
