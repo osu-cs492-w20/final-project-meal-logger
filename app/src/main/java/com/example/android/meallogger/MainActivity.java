@@ -19,6 +19,7 @@ import android.view.MenuItem;
 
 import com.example.android.meallogger.data.FoodId;
 import com.example.android.meallogger.data.MealData;
+import com.example.android.meallogger.data.Meal;
 import com.example.android.meallogger.SavedMealsAdapter;
 import com.example.android.meallogger.data.Status;
 
