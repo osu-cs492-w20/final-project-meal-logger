@@ -4,11 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -249,7 +247,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.create_meal, menu);
+        getMenuInflater().inflate(R.menu.new_food, menu);
         mShowAddModuleButton = findViewById(R.id.action_new_food);
         return true;
     }
