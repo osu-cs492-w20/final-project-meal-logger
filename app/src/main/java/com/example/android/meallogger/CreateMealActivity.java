@@ -1,6 +1,7 @@
 package com.example.android.meallogger;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -35,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.meallogger.data.FoodId;
 
 import com.example.android.meallogger.data.Meal;
+import com.example.android.meallogger.data.MealData;
 import com.example.android.meallogger.data.Status;
 import com.example.android.meallogger.utils.MealCreationViewModel;
 
@@ -59,6 +61,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private ImageButton mButtonTitleCfrm;
     private ImageButton mCameraButton;
     private List<FoodId> mChoiceContent;
+    private Bitmap mImageBitmap;
 
     private Meal mFinalMeal;
     private TextView mTitle;
@@ -87,6 +90,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         setContentView(R.layout.activity_create);
 
         mImageView = findViewById(R.id.mealPic);
+        mImageBitmap = null;
 
         mRvChoices = findViewById(R.id.rv_creation_choices);
         mRvChoices.setLayoutManager(new LinearLayoutManager(this));
@@ -247,7 +251,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.new_food, menu);
+        getMenuInflater().inflate(R.menu.create_activity, menu);
         mShowAddModuleButton = findViewById(R.id.action_new_food);
         return true;
     }
@@ -258,8 +262,9 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             case R.id.action_new_food:
                 showModule();
                 return true;
-            case R.id.button_camera:
-                dispatchTakePictureIntent();
+            case R.id.action_finish_meal:
+                finishMeal();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -314,8 +319,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             mCameraButton.setVisibility(View.GONE);
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
+            mImageBitmap = (Bitmap) extras.get("data");
+            mImageView.setImageBitmap(mImageBitmap);
         }
         super.onActivityResult(requestCode,resultCode,data);
     }
@@ -335,5 +340,20 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mIron.setText(String.valueOf(mFinalMeal.totalNutrients.iron.amount));
         mSodium.setText(String.valueOf(mFinalMeal.totalNutrients.sodium.amount));
         mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
+    }
+
+    private void finishMeal(){
+        Intent returnIntent = new Intent();
+        if(mFinalMeal!=null){
+
+            // Need to transfer all the data to MealData
+
+            MealData returnedMeal = new MealData();
+            returnedMeal.name = mFinalMeal.title;
+//            returnedMeal.photo = mImageBitmap;
+            returnIntent.putExtra("result", returnedMeal);
+        }
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 }

@@ -1,6 +1,8 @@
 package com.example.android.meallogger.data;
 
-public class PortionDescription {
+import java.io.Serializable;
+
+public class PortionDescription implements Serializable {
     public float gramWeight;
     public String modifier;
 }

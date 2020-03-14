@@ -1,8 +1,9 @@
 package com.example.android.meallogger.data;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MealItem {
+public class MealItem implements Serializable {
     public String description;
     public String dataType;
     public String brandOwner;

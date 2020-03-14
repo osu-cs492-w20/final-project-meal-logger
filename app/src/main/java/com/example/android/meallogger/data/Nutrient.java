@@ -1,6 +1,8 @@
 package com.example.android.meallogger.data;
 
-public class Nutrient {
+import java.io.Serializable;
+
+public class Nutrient implements Serializable {
     public String name;
     public String unitName;
 }

@@ -1,12 +1,14 @@
 package com.example.android.meallogger;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.meallogger.data.Meal;
 import com.example.android.meallogger.data.MealData;
 import com.example.android.meallogger.data.Status;
 
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         switch(item.getItemId()) {
             case R.id.action_create_meal:
                 Intent intent = new Intent(this, CreateMealActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
                 return true;
             case R.id.action_new_food:
                 Log.d(TAG, "new food");
@@ -116,6 +119,13 @@ public class MainActivity extends AppCompatActivity
         // will add intent to open meal detail activity later
     }
 
-// need method to read saved meals from database
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK){
+            mViewModel.insertMeal((MealData) data.getExtras().getSerializable("result"));
+        }
+    }
 
+    // need method to read saved meals from database
 }

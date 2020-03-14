@@ -1,9 +1,10 @@
 package com.example.android.meallogger.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Meal {
+public class Meal implements Serializable {
     public String title;
     public String type;
     public String date;

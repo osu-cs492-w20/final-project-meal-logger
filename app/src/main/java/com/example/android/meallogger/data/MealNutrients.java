@@ -1,6 +1,8 @@
 package com.example.android.meallogger.data;
 
-public class MealNutrients {
+import java.io.Serializable;
+
+public class MealNutrients implements Serializable {
 
     MealNutrients(){
         fat = new MealValue();
@@ -38,7 +40,7 @@ public class MealNutrients {
         calories.unit = "kcal";
     }
 
-    public class MealValue{
+    public class MealValue implements Serializable{
         public float amount;
         public String unit;
     }
