@@ -20,7 +20,7 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
     OnResultClickListener mClickListener;
 
     interface OnResultClickListener {
-        void onRVClicked(FoodId food);
+        void onChoiceClicked(FoodId food);
     }
 
     public FoodidRecyclerAdapter(OnResultClickListener listener){
@@ -69,7 +69,7 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mClickListener.onRVClicked(
+                    mClickListener.onChoiceClicked(
                             mFoodChoices.get(getAdapterPosition())
                     );
                 }

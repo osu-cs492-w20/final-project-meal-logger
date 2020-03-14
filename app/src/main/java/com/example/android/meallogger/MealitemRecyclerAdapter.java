@@ -9,16 +9,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.android.meallogger.data.FoodId;
 import com.example.android.meallogger.data.MealItem;
 
 import java.util.List;
 
 public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecyclerAdapter.ResultViewHolder> {
-    List<MealItem> mFoodChoices;
+    List<MealItem> mItems;
+    OnResultClickListener mClickListener;
+
+    interface OnResultClickListener {
+        void onItemSelected(MealItem item);
+    }
+
+    public MealitemRecyclerAdapter(OnResultClickListener listener){
+        mClickListener = listener;
+    }
 
     public void updateAdapter(List<MealItem> list){
-        mFoodChoices = list;
+        mItems = list;
         notifyItemInserted(0);
     }
 
@@ -32,13 +40,13 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
     @Override
     public void onBindViewHolder(@NonNull MealitemRecyclerAdapter.ResultViewHolder holder, int position) {
-        holder.bind(mFoodChoices.get(position));
+        holder.bind(mItems.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if (mFoodChoices != null){
-            return mFoodChoices.size();
+        if (mItems != null){
+            return mItems.size();
         } else {
             return 0;
         }
@@ -55,6 +63,14 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
             mTvAdapterDesc = itemView.findViewById(R.id.tv_adapter_item_description);
             mEtServingAmount = itemView.findViewById(R.id.tv_adapter_item_amount);
             mTvAdapterUnit = itemView.findViewById(R.id.tv_adapter_item_unit);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mClickListener.onItemSelected(
+                            mItems.get(getAdapterPosition())
+                    );
+                }
+            });
         }
 
         public void bind(MealItem item) {
@@ -64,7 +80,7 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
         public void remove() {
             int position  = getAdapterPosition();
-            mFoodChoices.remove(position);
+            mItems.remove(position);
             notifyItemRemoved(position);
         }
     }

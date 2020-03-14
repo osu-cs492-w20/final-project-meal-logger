@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -37,12 +38,13 @@ import com.example.android.meallogger.data.FoodId;
 
 import com.example.android.meallogger.data.Meal;
 import com.example.android.meallogger.data.MealData;
+import com.example.android.meallogger.data.MealItem;
 import com.example.android.meallogger.data.Status;
 import com.example.android.meallogger.utils.MealCreationViewModel;
 
 import java.util.List;
 
-public class CreateMealActivity extends AppCompatActivity implements FoodidRecyclerAdapter.OnResultClickListener{
+public class CreateMealActivity extends AppCompatActivity implements FoodidRecyclerAdapter.OnResultClickListener, MealitemRecyclerAdapter.OnResultClickListener{
     static final int REQUEST_IMAGE_CAPTURE = 1;
     
     private FrameLayout mAddItemFrame;
@@ -100,7 +102,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
         mRvAddedItems = findViewById(R.id.rv_meal_items);
         mRvAddedItems.setLayoutManager(new LinearLayoutManager(this));
-        mRvAddAdapter = new MealitemRecyclerAdapter();
+        mRvAddAdapter = new MealitemRecyclerAdapter(this);
         mRvAddedItems.setAdapter(mRvAddAdapter);
         mRvAddedItems.setItemAnimator(new DefaultItemAnimator());
 
@@ -242,7 +244,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     }
 
     @Override
-    public void onRVClicked(FoodId food){
+    public void onChoiceClicked(FoodId food){
         mRvChoices.setVisibility(View.GONE);
         mAddItemTextBox.setVisibility(View.VISIBLE);
         mPbSearch.setVisibility(View.VISIBLE);
@@ -355,5 +357,11 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         }
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+    }
+
+    @Override
+    public void onItemSelected(MealItem item) {
+        DialogFragment dialog = new MeasureMealItemDialog(item.foodPortions);
+        dialog.show(getSupportFragmentManager(), "GetPortionDialog");
     }
 }
