@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -17,10 +16,7 @@ import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.android.meallogger.data.FoodId;
 import com.example.android.meallogger.data.MealData;
-import com.example.android.meallogger.data.Meal;
-import com.example.android.meallogger.SavedMealsAdapter;
 import com.example.android.meallogger.data.Status;
 
 import java.util.List;
@@ -94,22 +90,25 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.create_meal, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-/*    @Override
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.action_new_meal:
+            case R.id.action_create_meal:
                 Intent intent = new Intent(this, CreateMealActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_new_food:
+                Log.d(TAG, "new food");
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
-    }*/
+    }
 
     @Override
     public void onSavedMealClicked(MealData meal) {
