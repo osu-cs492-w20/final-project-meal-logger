@@ -68,8 +68,6 @@ public class MealRepository implements APIQueryTask.Callback{
         json.appliedPortionIndex = -1;
         newValue.items.add(0, json);
         newValue.items.get(0).totalGramWeight = sumWeight(newValue.items.get(0).foodNutrients);
-        // Sum of meal content
-//        newValue = addTotal(newValue, json.foodNutrients);
 
         mFinalMeal.setValue(newValue);
         mStatus.setValue(Status.SUCCESS);

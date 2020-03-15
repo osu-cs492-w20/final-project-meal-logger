@@ -84,13 +84,8 @@ public class FoodidRecyclerAdapter extends RecyclerView.Adapter<FoodidRecyclerAd
                 case "Branded":
                     mTvAdapterBrandOwner.setText(foodId.brandOwner);
                     break;
-                case "SR Legacy":
-                    mTvAdapterBrandOwner.setText(foodId.dataType);
-                    break;
-                case "Survey (FNDDS)":
-                    mTvAdapterBrandOwner.setText(foodId.dataType);
-                    break;
                 default:
+                    mTvAdapterBrandOwner.setText("");
             }
         }
     }

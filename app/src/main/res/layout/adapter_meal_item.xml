@@ -3,8 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
-    android:background="@color/colorPrimary">
+    android:layout_margin="5dp"
+    android:padding="10dp"
+    android:background="@color/colorSecondary">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,22 +21,24 @@
             android:gravity="center_vertical">
         </TextView>
         <TextView
-            android:id="@+id/tv_adapter_item_unit_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:singleLine="true"
-            android:layout_gravity="start"
-            android:layout_weight="1"
-            android:gravity="center_vertical">
-        </TextView>
-        <TextView
             android:id="@+id/tv_adapter_item_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
             android:singleLine="true"
-            android:layout_gravity="end">
-        </TextView>
+            android:layout_gravity="end"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:text="x"/>
+        <TextView
+            android:id="@+id/tv_adapter_item_unit_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:singleLine="true"
+            android:textSize="22sp" />
     </LinearLayout>
 </LinearLayout>

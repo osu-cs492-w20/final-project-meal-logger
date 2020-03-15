@@ -19,14 +19,20 @@
             android:layout_weight="1"
             android:text="Unit..."
             android:textSize="24sp" />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="x"
+            android:layout_gravity="center_vertical"
+            />
         <EditText
             android:id="@+id/dialog_amount_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_weight="1"
             android:minWidth="20dp"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:hint="Float..."/>
     </LinearLayout>
 </LinearLayout>

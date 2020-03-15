@@ -10,10 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android.meallogger.data.Meal;
 import com.example.android.meallogger.data.MealItem;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecyclerAdapter.ResultViewHolder> {
@@ -25,6 +27,7 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
     }
 
     public MealitemRecyclerAdapter(OnResultClickListener listener){
+        mItems = new ArrayList<MealItem>();
         mClickListener = listener;
     }
 
@@ -32,6 +35,11 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
         mItems = list;
         notifyDataSetChanged();
 //        notifyItemInserted(0);
+    }
+
+    public void insertAdapter(MealItem item){
+        mItems.add(0, item);
+        notifyItemInserted(0);
     }
 
     @NonNull
@@ -55,7 +63,6 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
             return 0;
         }
     }
-
 
     class ResultViewHolder extends RecyclerView.ViewHolder{
         TextView mTvAdapterDesc;

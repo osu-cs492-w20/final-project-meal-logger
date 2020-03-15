@@ -178,6 +178,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     showModule();
                     mRvAddedItems.scrollToPosition(0);
                     mRvAddAdapter.updateAdapter(mFinalMeal.items);
+                //FIX: Pretty animation but causes dupe
+//                    mRvAddAdapter.insertAdapter(mFinalMeal.items.get(0));
                 } else if(status == Status.DONE){
                     //Hide TextBox & Pic
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
@@ -186,6 +188,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     //Pass choice into RV
                     mRvChoices.setVisibility(View.VISIBLE);
                     mRvChoiceAdapter.updateAdapter(mChoiceContent);
+                    mRvChoices.scrollToPosition(0);
                 } else{
                     mAddItemTextBox.setEnabled(true);
                     mAddItemTextBox.setVisibility(View.VISIBLE);
@@ -335,17 +338,16 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
             String foods = "";
             MealData newMeal = new MealData();
-            newMeal.totalFat = mFinalMeal.totalNutrients.fat.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalSatFat = mFinalMeal.totalNutrients.saturatedFat.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalCholesterol = mFinalMeal.totalNutrients.cholesterol.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalSodium = mFinalMeal.totalNutrients.sodium.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalCarb = mFinalMeal.totalNutrients.carbohydrates.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalSugar = mFinalMeal.totalNutrients.sugars.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalProtein = mFinalMeal.totalNutrients.protein.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalCalcium = mFinalMeal.totalNutrients.calcium.amount + mFinalMeal.totalNutrients.calories.unit;
-            newMeal.totalIron = mFinalMeal.totalNutrients.iron.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalFat = mFinalMeal.totalNutrients.fat.amount + mFinalMeal.totalNutrients.fat.unit;
+            newMeal.totalSatFat = mFinalMeal.totalNutrients.saturatedFat.amount + mFinalMeal.totalNutrients.saturatedFat.unit;
+            newMeal.totalCholesterol = mFinalMeal.totalNutrients.cholesterol.amount + mFinalMeal.totalNutrients.cholesterol.unit;
+            newMeal.totalSodium = mFinalMeal.totalNutrients.sodium.amount + mFinalMeal.totalNutrients.sodium.unit;
+            newMeal.totalCarb = mFinalMeal.totalNutrients.carbohydrates.amount + mFinalMeal.totalNutrients.carbohydrates.unit;
+            newMeal.totalSugar = mFinalMeal.totalNutrients.sugars.amount + mFinalMeal.totalNutrients.sugars.unit;
+            newMeal.totalProtein = mFinalMeal.totalNutrients.protein.amount + mFinalMeal.totalNutrients.protein.unit;
+            newMeal.totalCalcium = mFinalMeal.totalNutrients.calcium.amount + mFinalMeal.totalNutrients.calcium.unit;
+            newMeal.totalIron = mFinalMeal.totalNutrients.iron.amount + mFinalMeal.totalNutrients.iron.unit;
             newMeal.totalCalories = mFinalMeal.totalNutrients.calories.amount + mFinalMeal.totalNutrients.calories.unit;
-
 
             foods += mFinalMeal.items.get(0).description;
             for (int x = 1; x < mFinalMeal.items.size() - 1; x++) {

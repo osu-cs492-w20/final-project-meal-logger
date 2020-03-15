@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/create_activity"
-    tools:context=".CreateMealActivity">
+    tools:context=".CreateMealActivity" >
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_creation_choices"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"/>
     <LinearLayout
         android:id="@+id/ll_rv_holder"
@@ -47,18 +47,18 @@
             <FrameLayout
                 android:id="@+id/fl_add_item"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="10dp">
                 <LinearLayout
                     android:id="@+id/ll_create_search_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:layout_gravity="center_vertical">
                     <EditText
                         android:id="@+id/et_item_lookup_box"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:padding="10dp"
                         android:textSize="24sp"
                         android:hint="Lookup..."
                         android:enabled="false"
@@ -125,14 +125,20 @@
         </FrameLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_meal_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
                 android:id="@+id/nutrition_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -347,11 +353,6 @@
                         android:padding="16dp"/>
                 </LinearLayout>
             </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_meal_items"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>
