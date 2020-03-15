@@ -1,5 +1,6 @@
 package com.example.android.meallogger;
 
+import android.nfc.Tag;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.meallogger.data.MealItem;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecyclerAdapter.ResultViewHolder> {
     List<MealItem> mItems;
-    OnResultClickListener mClickListener;
+    static OnResultClickListener mClickListener;
 
     interface OnResultClickListener {
-        void onItemSelected(MealItem item);
+        void onItemSelected(MealItem item, int index);
     }
 
     public MealitemRecyclerAdapter(OnResultClickListener listener){
@@ -27,7 +30,8 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
     public void updateAdapter(List<MealItem> list){
         mItems = list;
-        notifyItemInserted(0);
+        notifyDataSetChanged();
+//        notifyItemInserted(0);
     }
 
     @NonNull
@@ -55,19 +59,19 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
     class ResultViewHolder extends RecyclerView.ViewHolder{
         TextView mTvAdapterDesc;
-        EditText mEtServingAmount;
+        TextView mTvAdapterAmount;
         TextView mTvAdapterUnit;
 
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);
             mTvAdapterDesc = itemView.findViewById(R.id.tv_adapter_item_description);
-            mEtServingAmount = itemView.findViewById(R.id.tv_adapter_item_amount);
+            mTvAdapterAmount = itemView.findViewById(R.id.tv_adapter_item_unit_amount);
             mTvAdapterUnit = itemView.findViewById(R.id.tv_adapter_item_unit);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mClickListener.onItemSelected(
-                            mItems.get(getAdapterPosition())
+                            mItems.get(getAdapterPosition()), getAdapterPosition()
                     );
                 }
             });
@@ -75,7 +79,12 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
         public void bind(MealItem item) {
             mTvAdapterDesc.setText(item.description);
-            mTvAdapterUnit.setText(item.servingSizeUnit);
+            mTvAdapterAmount.setText(String.valueOf(item.amountPortion));
+            if(item.appliedPortionIndex!=-1){
+                mTvAdapterUnit.setText(item.foodPortions.get(item.appliedPortionIndex).portionDescription);
+            } else {
+                mTvAdapterUnit.setText("Tap to modify...");
+            }
         }
 
         public void remove() {
