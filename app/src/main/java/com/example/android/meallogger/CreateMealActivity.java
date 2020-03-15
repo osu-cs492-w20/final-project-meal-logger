@@ -434,21 +434,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
     }
 
-    /*private void finishMeal(){
-        Intent returnIntent = new Intent();
-        if(mFinalMeal!=null){
-
-            // Need to transfer all the data to MealData
-
-            MealData returnedMeal = new MealData();
-            returnedMeal.name = mFinalMeal.title;
-//            returnedMeal.photo = mImageBitmap;
-            returnIntent.putExtra("result", returnedMeal);
-        }
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();
-    }*/
-
     @Override
     public void onItemSelected(MealItem item, int index) {
         mFoodSelectedForPortion = index;

@@ -73,7 +73,7 @@ public class MealRepository implements APIQueryTask.Callback{
         mStatus.setValue(Status.SUCCESS);
     }
 
-    public Meal addTotal(Meal total, MealItem item){
+    private Meal addTotal(Meal total, MealItem item){
         float multiplier = item.servingMultiplier;
         for(int i=0; i<item.foodNutrients.size(); i++){
             FoodNutrient ntr = item.foodNutrients.get(i);
@@ -81,108 +81,123 @@ public class MealRepository implements APIQueryTask.Callback{
             ntr.amount = ((float) ((int)(ntr.amount * 1000)) )/1000;
             switch(ntr.nutrient.name){
                 case "Energy":
-                    safety = (int)(total.totalNutrients.calories.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.calories.amount = (float)safety/1000;
+                    total.totalNutrients.calories.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.calories.amount, ntr.amount, multiplier);
                     break;
                 case "Protein":
-                    safety = (int)(total.totalNutrients.protein.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.protein.amount = (float)safety/1000;
+                    total.totalNutrients.protein.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.protein.amount, ntr.amount, multiplier);
                     break;
                 case "Total lipid (fat)":
-                    safety = (int)(total.totalNutrients.fat.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.fat.amount = (float)safety/1000;
+                    total.totalNutrients.fat.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.fat.amount, ntr.amount, multiplier);
                     break;
                 case "Fatty acids, total saturated":
-                    safety = (int)(total.totalNutrients.saturatedFat.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.saturatedFat.amount = (float)safety/1000;
+                    total.totalNutrients.saturatedFat.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.saturatedFat.amount, ntr.amount, multiplier);
                     break;
                 case "Fatty acids, total trans":
-                    safety = (int)(total.totalNutrients.transFat.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.transFat.amount = (float)safety/1000;
+                    total.totalNutrients.transFat.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.transFat.amount, ntr.amount, multiplier);
                     break;
                 case "Carbohydrate, by difference":
-                    safety = (int)(total.totalNutrients.carbohydrates.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.carbohydrates.amount = (float)safety/1000;
+                    total.totalNutrients.carbohydrates.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.carbohydrates.amount, ntr.amount, multiplier);
                     break;
                 case "Sugars, total including NLEA":
-                    safety = (int)(total.totalNutrients.sugars.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.sugars.amount = (float)safety/1000;
+                    total.totalNutrients.sugars.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.sugars.amount, ntr.amount, multiplier);
                     break;
                 case "Iron, Fe":
-                    safety = (int)(total.totalNutrients.iron.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.iron.amount = (float)safety/1000;
+                    total.totalNutrients.iron.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.iron.amount, ntr.amount, multiplier);
                     break;
                 case "Sodium, Na":
-                    safety = (int)(total.totalNutrients.sodium.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.sodium.amount = (float)safety/1000;
+                    total.totalNutrients.sodium.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.sodium.amount, ntr.amount, multiplier);
                     break;
                 case "Calcium, Ca":
-                    safety = (int)(total.totalNutrients.calcium.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.calcium.amount = (float)safety/1000;
+                    total.totalNutrients.calcium.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.calcium.amount, ntr.amount, multiplier);
                     break;
                 case "Cholesterol":
-                    safety = (int)(total.totalNutrients.cholesterol.amount*1000) + (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.cholesterol.amount = (float)safety/1000;
+                    total.totalNutrients.cholesterol.amount = safeNutrientFloatOperation('+',
+                            total.totalNutrients.cholesterol.amount, ntr.amount, multiplier);
                     break;
                 default:
             }
         }
         return total;
     }
-    public Meal subTotal(Meal total, MealItem item){
+    private Meal subTotal(Meal total, MealItem item){
         float multiplier = item.servingMultiplier;
         for(int i=0; i<item.foodNutrients.size(); i++){
             FoodNutrient ntr = item.foodNutrients.get(i);
             int safety;
             switch(ntr.nutrient.name){
                 case "Energy":
-                    safety = (int)(total.totalNutrients.calories.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.calories.amount = (float)safety/1000;
+                    total.totalNutrients.calories.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.calories.amount, ntr.amount, multiplier);
                     break;
                 case "Protein":
-                    safety = (int)(total.totalNutrients.protein.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.protein.amount = (float)safety/1000;
+                    total.totalNutrients.protein.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.protein.amount, ntr.amount, multiplier);
                     break;
                 case "Total lipid (fat)":
-                    safety = (int)(total.totalNutrients.fat.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.fat.amount = (float)safety/1000;
+                    total.totalNutrients.fat.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.fat.amount, ntr.amount, multiplier);
                     break;
                 case "Fatty acids, total saturated":
-                    safety = (int)(total.totalNutrients.saturatedFat.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.saturatedFat.amount = (float)safety/1000;
+                    total.totalNutrients.saturatedFat.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.saturatedFat.amount, ntr.amount, multiplier);
                     break;
                 case "Fatty acids, total trans":
-                    safety = (int)(total.totalNutrients.transFat.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.transFat.amount = (float)safety/1000;
+                    total.totalNutrients.transFat.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.transFat.amount, ntr.amount, multiplier);
                     break;
                 case "Carbohydrate, by difference":
-                    safety = (int)(total.totalNutrients.carbohydrates.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.carbohydrates.amount = (float)safety/1000;
+                    total.totalNutrients.carbohydrates.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.carbohydrates.amount, ntr.amount, multiplier);
                     break;
                 case "Sugars, total including NLEA":
-                    safety = (int)(total.totalNutrients.sugars.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.sugars.amount = (float)safety/1000;
+                    total.totalNutrients.sugars.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.sugars.amount, ntr.amount, multiplier);
                     break;
                 case "Iron, Fe":
-                    safety = (int)(total.totalNutrients.iron.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.iron.amount = (float)safety/1000;
+                    total.totalNutrients.iron.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.iron.amount, ntr.amount, multiplier);
                     break;
                 case "Sodium, Na":
-                    safety = (int)(total.totalNutrients.sodium.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.sodium.amount = (float)safety/1000;
+                    total.totalNutrients.sodium.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.sodium.amount, ntr.amount, multiplier);
                     break;
                 case "Calcium, Ca":
-                    safety = (int)(total.totalNutrients.calcium.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.calcium.amount = (float)safety/1000;
+                    total.totalNutrients.calcium.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.calcium.amount, ntr.amount, multiplier);
                     break;
                 case "Cholesterol":
-                    safety = (int)(total.totalNutrients.cholesterol.amount*1000) - (int)(ntr.amount * multiplier * 1000);
-                    total.totalNutrients.cholesterol.amount = (float)safety/1000;
+                    total.totalNutrients.cholesterol.amount = safeNutrientFloatOperation('-',
+                            total.totalNutrients.cholesterol.amount, ntr.amount, multiplier);
                     break;
                 default:
             }
         }
         return total;
+    }
+
+    // Float arithmetic is bad
+    private float safeNutrientFloatOperation(char mode, float total, float amount, float multiplier){
+        float safety;
+        switch(mode){
+            case '+':
+                safety = (int)((total*1000) + (amount * multiplier * 1000));
+                return (float)safety/1000;
+            case '-':
+                safety = (int)((total*1000) - (amount * multiplier * 1000));
+                return (float)safety/1000;
+            default:
+                return 0;
+        }
     }
 
     public void addFoodItemtoMeal(String query){
