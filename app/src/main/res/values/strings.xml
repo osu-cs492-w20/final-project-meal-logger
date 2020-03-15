@@ -15,5 +15,7 @@
     <string name="display_create_calcium">Calcium:</string>
     <string name="display_create_iron">Iron:</string>
     <string name="display_create_calories">Calories:</string>
+    <string name="save_meal">Save:</string>
+    <string name="tv_meal_title">Tap to edit meal title</string>
 
 </resources>

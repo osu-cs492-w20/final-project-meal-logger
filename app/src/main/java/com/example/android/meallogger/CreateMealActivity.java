@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +43,12 @@ import com.example.android.meallogger.data.MealItem;
 import com.example.android.meallogger.data.Status;
 import com.example.android.meallogger.utils.MealCreationViewModel;
 
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import static java.lang.Integer.parseInt;
 
 public class CreateMealActivity extends AppCompatActivity implements FoodidRecyclerAdapter.OnResultClickListener, MealitemRecyclerAdapter.OnResultClickListener{
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -238,7 +244,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             }
         };
 
-
         ItemTouchHelper helper = new ItemTouchHelper(SimpleCallback);
         helper.attachToRecyclerView(mRvAddedItems);
     }
@@ -265,7 +270,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                 showModule();
                 return true;
             case R.id.action_finish_meal:
-                finishMeal();
+                saveMealData();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -316,6 +321,84 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         }
     }
 
+    private void saveMealData() {
+
+        Intent returnIntent = new Intent();
+        if(mFinalMeal!=null && mFinalMeal.items.size() != 0) {
+
+            // Need to transfer all the data to MealData
+
+            String foods = "";
+            MealData newMeal = new MealData();
+            newMeal.totalFat = mFinalMeal.totalNutrients.fat.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalSatFat = mFinalMeal.totalNutrients.saturatedFat.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalCholesterol = mFinalMeal.totalNutrients.cholesterol.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalSodium = mFinalMeal.totalNutrients.sodium.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalCarb = mFinalMeal.totalNutrients.carbohydrates.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalSugar = mFinalMeal.totalNutrients.sugars.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalProtein = mFinalMeal.totalNutrients.protein.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalCalcium = mFinalMeal.totalNutrients.calcium.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalIron = mFinalMeal.totalNutrients.iron.amount + mFinalMeal.totalNutrients.calories.unit;
+            newMeal.totalCalories = mFinalMeal.totalNutrients.calories.amount + mFinalMeal.totalNutrients.calories.unit;
+
+
+            foods += mFinalMeal.items.get(0).description;
+            for (int x = 1; x < mFinalMeal.items.size() - 1; x++) {
+                foods = foods + "," + mFinalMeal.items.get(x).description;
+            }
+            newMeal.foodsList = foods;
+
+            Date date = new Date();
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat timeFormat =
+                    new SimpleDateFormat("hh:mm:ss");
+            SimpleDateFormat hourFormat =
+                    new SimpleDateFormat("hh");
+            SimpleDateFormat mFormat =
+                    new SimpleDateFormat("a");
+
+            String hour = hourFormat.format(date);
+            String type = "Unknown";
+            String ampm = mFormat.format(date);
+            int h = parseInt(hour);
+            if (ampm.equals("PM")) {
+                h += 12;
+            }
+            Log.d(TAG, "value is: " + h);
+            if (h > 15) {
+                type = "Dinner";
+            } else if (h > 12) {
+                type = "Lunch";
+            } else if (h > 0) {
+                type = "Breakfast";
+            }
+            newMeal.description = type + " on " + dateFormat.format(date);
+            newMeal.date = dateFormat.format(date);
+            newMeal.time = timeFormat.format(date);
+            newMeal.type = type;
+
+            if (mImageBitmap != null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                byte[] bArray = bos.toByteArray();
+
+                newMeal.photo = bArray;
+            } else {
+                newMeal.photo = new byte[0];
+            }
+
+            newMeal.name = mFinalMeal.title;
+            returnIntent.putExtra("result", newMeal);
+
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+        //send error about problem saving
+        //ADD DESCRIPTION PHOTO
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -344,7 +427,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mCholesterol.setText(String.valueOf(mFinalMeal.totalNutrients.cholesterol.amount));
     }
 
-    private void finishMeal(){
+    /*private void finishMeal(){
         Intent returnIntent = new Intent();
         if(mFinalMeal!=null){
 
@@ -357,7 +440,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         }
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
-    }
+    }*/
 
     @Override
     public void onItemSelected(MealItem item) {
