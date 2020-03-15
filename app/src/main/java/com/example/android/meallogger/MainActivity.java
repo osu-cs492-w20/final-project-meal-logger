@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mErrorMessageTV;
     private ProgressBar mLoadingIndicatorPB;
 
-    private SavedMealsViewModel mViewModel;
+    public static SavedMealsViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
