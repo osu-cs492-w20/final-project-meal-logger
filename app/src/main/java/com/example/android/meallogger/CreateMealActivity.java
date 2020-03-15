@@ -40,6 +40,7 @@ import com.example.android.meallogger.data.FoodId;
 import com.example.android.meallogger.data.Meal;
 import com.example.android.meallogger.data.MealData;
 import com.example.android.meallogger.data.MealItem;
+import com.example.android.meallogger.data.PortionDescription;
 import com.example.android.meallogger.data.Status;
 import com.example.android.meallogger.utils.MealCreationViewModel;
 
@@ -49,8 +50,8 @@ import java.util.Date;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
+public class CreateMealActivity extends AppCompatActivity implements FoodidRecyclerAdapter.OnResultClickListener, MealitemRecyclerAdapter.OnResultClickListener, MeasureMealItemDialog.OnSubmitServingSize{
 
-public class CreateMealActivity extends AppCompatActivity implements FoodidRecyclerAdapter.OnResultClickListener, MealitemRecyclerAdapter.OnResultClickListener{
     static final int REQUEST_IMAGE_CAPTURE = 1;
     
     private FrameLayout mAddItemFrame;
@@ -89,6 +90,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private TextView mCholesterol;
 
     private View mShowAddModuleButton;
+    private int mFoodSelectedForPortion;
 
     private static final String TAG = CreateMealActivity.class.getSimpleName();
 
@@ -148,7 +150,9 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     if(mFinalMeal.title.length()>0){
                         mTitle.setText(mFinalMeal.title);
                     }
+                    Log.d(TAG, "!==Items:"+mFinalMeal.items.size());
                 }
+                updateNutrientDisplay();
             }
         });
         mViewModel.getFoodChoices().observe(this, new Observer<List<FoodId>>() {
@@ -174,7 +178,6 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     showModule();
                     mRvAddedItems.scrollToPosition(0);
                     mRvAddAdapter.updateAdapter(mFinalMeal.items);
-                    updateNutrientDisplay();
                 } else if(status == Status.DONE){
                     //Hide TextBox & Pic
                     mAddItemTextBox.setVisibility(View.INVISIBLE);
@@ -246,6 +249,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
         ItemTouchHelper helper = new ItemTouchHelper(SimpleCallback);
         helper.attachToRecyclerView(mRvAddedItems);
+
+//        test();
     }
 
     @Override
@@ -443,8 +448,21 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     }*/
 
     @Override
-    public void onItemSelected(MealItem item) {
-        DialogFragment dialog = new MeasureMealItemDialog(item.foodPortions);
+    public void onItemSelected(MealItem item, int index) {
+        mFoodSelectedForPortion = index;
+        for(PortionDescription portion : item.foodPortions){
+            portion.dataType = item.dataType;
+        }
+        DialogFragment dialog = new MeasureMealItemDialog(item, this);
         dialog.show(getSupportFragmentManager(), "GetPortionDialog");
+    }
+
+    public void calculatePortions(int index, float amountOfServing) {
+        mViewModel.updatePortionMultiplier(mFoodSelectedForPortion, index, amountOfServing);
+        mRvAddAdapter.updateAdapter(mFinalMeal.items);
+    }
+
+    public void test(){
+        mViewModel.addItemToMeal("Broccoli");
     }
 }

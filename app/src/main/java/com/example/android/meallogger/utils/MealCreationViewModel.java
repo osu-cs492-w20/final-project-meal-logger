@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.android.meallogger.data.FoodId;
 import com.example.android.meallogger.data.Meal;
+import com.example.android.meallogger.data.MealItem;
 import com.example.android.meallogger.data.MealRepository;
 import com.example.android.meallogger.data.Status;
 
@@ -34,6 +35,8 @@ public class MealCreationViewModel extends ViewModel {
     public void remove(int index) { mRepository.removeFoodItemfromMeal(index); }
 
     public void rename(String name) { mRepository.updateName(name); }
+
+    public void updatePortionMultiplier(int selectedFood,int portionIndex, float amountOfServing) { mRepository.updatePortionMult(selectedFood, portionIndex, amountOfServing); }
 
     public LiveData<Meal> getMeal(){ return mMeal; }
     public LiveData<Status> getStatus(){ return mLoadingStatus; }

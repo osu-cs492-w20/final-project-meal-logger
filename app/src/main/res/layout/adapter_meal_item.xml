@@ -20,7 +20,7 @@
             android:gravity="center_vertical">
         </TextView>
         <TextView
-            android:id="@+id/tv_adapter_item_misc"
+            android:id="@+id/tv_adapter_item_unit_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
@@ -29,13 +29,6 @@
             android:layout_weight="1"
             android:gravity="center_vertical">
         </TextView>
-        <EditText
-            android:id="@+id/tv_adapter_item_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:singleLine="true"
-            android:layout_gravity="end" />
         <TextView
             android:id="@+id/tv_adapter_item_unit"
             android:layout_width="wrap_content"

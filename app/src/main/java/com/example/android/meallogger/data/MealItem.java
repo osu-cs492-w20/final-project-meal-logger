@@ -10,6 +10,11 @@ public class MealItem implements Serializable {
     public int fdcId;
     public float servingSize;
     public String servingSizeUnit;
+    public String householdServingFullText;
     public List<FoodNutrient> foodNutrients;
     public List<PortionDescription> foodPortions;
+    public float servingMultiplier;
+    public float totalGramWeight;
+    public int appliedPortionIndex;
+    public float amountPortion;
 }
