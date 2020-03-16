@@ -23,7 +23,8 @@
                 <FrameLayout
                     android:id="@+id/fl_meal_image"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:padding="15dp">
                     <ImageButton
                         android:id="@+id/button_camera"
                         android:layout_width="wrap_content"
@@ -34,6 +35,7 @@
                         android:id="@+id/mealPic"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
+                        android:scaleType="centerCrop"
                         tools:srcCompat="@tools:sample/backgrounds/scenic" />
                     <ImageView
                         android:id="@+id/search_foodid_icon"
@@ -113,6 +115,7 @@
                                     android:id="@+id/tv_meal_title"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
+                                    android:layout_gravity="center"
                                     android:textSize="24sp"
                                     android:text="@string/tv_meal_title" />
                             </FrameLayout>
@@ -129,15 +132,6 @@
                     </FrameLayout>
                 </FrameLayout>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp">
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_meal_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -145,34 +139,27 @@
                     android:id="@+id/nutrition_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginHorizontal="2dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal" >
-
                         <TextView
                             android:id="@+id/tv_create_calories"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_calories"/>
                         <TextView
                             android:id="@+id/tv_total_calories"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:paddingTop="16dp"
+                            android:paddingTop="4sp"
                             android:paddingRight="1mm"
                             android:layout_gravity="end"/>
-                        <TextView
-                            android:id="@+id/tv_total_unit_calories"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textSize="18sp"
-                            android:paddingTop="16dp"
-                            android:layout_gravity="start"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -183,14 +170,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_protein"/>
                         <TextView
                             android:id="@+id/tv_total_protein"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:layout_gravity="end"/>
                     </LinearLayout>
                     <LinearLayout
@@ -202,14 +189,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_carbohydrates"/>
                         <TextView
                             android:id="@+id/tv_total_carbs"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -220,14 +207,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_sugar"/>
                         <TextView
                             android:id="@+id/tv_total_sugar"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -238,14 +225,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_fat"/>
                         <TextView
                             android:id="@+id/tv_total_fat"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -256,14 +243,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_transfat"/>
                         <TextView
                             android:id="@+id/tv_total_tfat"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -274,14 +261,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_saturatefat"/>
                         <TextView
                             android:id="@+id/tv_total_sfat"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -292,14 +279,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:paddingRight="4sp"
                             android:text="@string/display_create_sodium"/>
                         <TextView
                             android:id="@+id/tv_total_sodium"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -310,14 +297,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
+                            android:padding="4sp"
                             android:text="@string/display_create_cholesterol"/>
                         <TextView
                             android:id="@+id/tv_total_cholst"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -328,14 +315,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
-                            android:text="@string/display_create_calcium"/>
+                            android:padding="4sp"
+android:text="@string/display_create_calcium"/>
                         <TextView
                             android:id="@+id/tv_total_calcium"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -346,17 +333,27 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"
-                            android:text="@string/display_create_iron"/>
+                            android:padding="4sp"
+android:text="@string/display_create_iron"/>
                         <TextView
                             android:id="@+id/tv_total_iron"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:padding="16dp"/>
+                            android:padding="4sp"/>
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_meal_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
         </LinearLayout>
         <ImageButton
             android:id="@+id/action_new_food"

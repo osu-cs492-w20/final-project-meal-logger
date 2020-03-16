@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:padding="10dp"
-    android:background="@color/colorSecondary">
+    android:background="@color/colorPrimary">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
+            android:textColor="@color/colorSecondary"
             android:singleLine="true"
             android:layout_gravity="start"
             android:layout_weight="1"
@@ -25,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
+            android:textColor="@color/colorSecondary"
             android:singleLine="true"
             android:layout_gravity="end"/>
         <TextView
@@ -32,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textSize="18sp"
+            android:textColor="@color/colorSecondary"
             android:text="x"/>
         <TextView
             android:id="@+id/tv_adapter_item_unit_amount"
@@ -39,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:singleLine="true"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:textColor="@color/colorSecondary" />
     </LinearLayout>
 </LinearLayout>
