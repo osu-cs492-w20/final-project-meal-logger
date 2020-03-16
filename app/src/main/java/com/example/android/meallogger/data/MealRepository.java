@@ -32,7 +32,6 @@ public class MealRepository implements APIQueryTask.Callback{
         mFinalMeal.setValue(new Meal());
 
         mStatus = new MutableLiveData<>();
-        mStatus.setValue(Status.ERROR);
 
         mFoodChoice = new MutableLiveData<>();
         mFoodChoice.setValue(null);
@@ -185,7 +184,7 @@ public class MealRepository implements APIQueryTask.Callback{
         return total;
     }
 
-    // Float arithmetic is bad
+    // Float arithmetic is the devil
     private float safeNutrientFloatOperation(char mode, float total, float amount, float multiplier){
         float safety;
         switch(mode){

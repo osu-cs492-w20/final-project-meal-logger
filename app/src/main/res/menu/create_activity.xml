@@ -8,9 +8,4 @@
         android:icon="@drawable/ic_done_24dp"
         android:title="Done editing"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/action_new_food"
-        android:icon="@drawable/ic_add_white_24dp"
-        android:title="Add new food"
-        app:showAsAction="always"/>
 </menu>

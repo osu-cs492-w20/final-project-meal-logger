@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,6 +73,9 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private List<FoodId> mChoiceContent;
     private Bitmap mImageBitmap;
 
+    private FrameLayout mFlRvChoice;
+    private Toast mToast;
+
     private Meal mFinalMeal;
     private TextView mTitle;
     private RecyclerView mRvAddedItems;
@@ -105,6 +109,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mRvChoices = findViewById(R.id.rv_creation_choices);
         mRvChoices.setLayoutManager(new LinearLayoutManager(this));
 
+        mFlRvChoice = findViewById(R.id.fl_choice_rv);
+
         mRvChoiceAdapter = new FoodidRecyclerAdapter(this);
         mRvChoices.setAdapter(mRvChoiceAdapter);
 
@@ -126,6 +132,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mButtonAddItem = findViewById(R.id.button_add_item);
         mButtonTitleCfrm = findViewById(R.id.button_title_confirm);
         mSearchIcon = findViewById(R.id.search_foodid_icon);
+        mShowAddModuleButton = findViewById(R.id.action_new_food);
 
         mFinalMeal = null;
         mTitle = findViewById(R.id.tv_meal_title);
@@ -140,6 +147,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mIron = findViewById(R.id.tv_total_iron);
         mSodium = findViewById(R.id.tv_total_sodium);
         mCholesterol = findViewById(R.id.tv_total_cholst);
+
+        mToast = null;
 
         mViewModel = new ViewModelProvider(this).get(MealCreationViewModel.class);
         mViewModel.getMeal().observe(this, new Observer<Meal>() {
@@ -160,6 +169,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             public void onChanged(List<FoodId> foodIds) {
                 if(foodIds != null){
                     mChoiceContent = foodIds;
+                    dispatchToast("Results: "+foodIds.size());
                 }
             }
         });
@@ -186,15 +196,16 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mPbSearch.setVisibility(View.INVISIBLE);
                     //Show
                     //Pass choice into RV
-                    mRvChoices.setVisibility(View.VISIBLE);
+                    mFlRvChoice.setVisibility(View.VISIBLE);
                     mRvChoiceAdapter.updateAdapter(mChoiceContent);
                     mRvChoices.scrollToPosition(0);
                 } else{
-                    mAddItemTextBox.setEnabled(true);
                     mAddItemTextBox.setVisibility(View.VISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
-                    mRvChoices.setVisibility(View.GONE);
+                    mFlRvChoice.setVisibility(View.GONE);
+                    mAddItemTextBox.setEnabled(true);
+                    dispatchToast("Failed Query!");
                 }
             }
         });
@@ -236,6 +247,13 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             }
         });
 
+        mShowAddModuleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showModule();
+            }
+        });
+
         ItemTouchHelper.Callback SimpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -258,7 +276,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
 
     @Override
     public void onChoiceClicked(FoodId food){
-        mRvChoices.setVisibility(View.GONE);
+        mFlRvChoice.setVisibility(View.GONE);
         mAddItemTextBox.setVisibility(View.VISIBLE);
         mPbSearch.setVisibility(View.VISIBLE);
         mViewModel.getItemDetails(food);
@@ -267,16 +285,12 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.create_activity, menu);
-        mShowAddModuleButton = findViewById(R.id.action_new_food);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_new_food:
-                showModule();
-                return true;
             case R.id.action_finish_meal:
                 saveMealData();
                 return true;
@@ -401,6 +415,9 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             setResult(Activity.RESULT_OK, returnIntent);
             finish();
         }
+        else{
+            dispatchToast("Need 1 or more items");
+        }
         //send error about problem saving
         //ADD DESCRIPTION PHOTO
 
@@ -448,6 +465,16 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
         mViewModel.updatePortionMultiplier(mFoodSelectedForPortion, index, amountOfServing);
         mRvAddAdapter.updateAdapter(mFinalMeal.items);
     }
+
+    public void dispatchToast(String toastText){
+        if(mToast!=null){
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(this, toastText, Toast.LENGTH_SHORT);
+        mToast.show();
+    }
+
+
 
     public void test(){
         mViewModel.addItemToMeal("Broccoli");
