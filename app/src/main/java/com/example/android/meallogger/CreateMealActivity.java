@@ -93,7 +93,7 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private TextView mSodium;
     private TextView mCholesterol;
 
-    private View mShowAddModuleButton;
+    private ImageButton mShowAddModuleButton;
     private int mFoodSelectedForPortion;
 
     private static final String TAG = CreateMealActivity.class.getSimpleName();
@@ -181,11 +181,11 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mPbSearch.setVisibility(View.VISIBLE);
                     mButtonAddItem.setVisibility(View.INVISIBLE);
                 } else if(status == Status.SUCCESS){
+                    showModule();
                     mAddItemTextBox.setEnabled(true);
                     mAddItemTextBox.setVisibility(View.VISIBLE);
                     mPbSearch.setVisibility(View.INVISIBLE);
                     mButtonAddItem.setVisibility(View.VISIBLE);
-                    showModule();
                     mRvAddedItems.scrollToPosition(0);
 //                    mRvAddAdapter.updateAdapter(mFinalMeal.items);
                 //FIX: Pretty animation but causes dupe
@@ -302,6 +302,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
     private void showModule (){
         mAddModuleVisibile=!mAddModuleVisibile;
         if(mAddModuleVisibile){
+            mShowAddModuleButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            mShowAddModuleButton.setImageResource(R.drawable.ic_close_white_24dp);
             mAddItemTextBox.setText("");
             mTitleFrame.setVisibility(View.GONE);
             mImageView.setVisibility(View.INVISIBLE);
@@ -312,6 +314,8 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
             mSearchIcon.setVisibility(View.VISIBLE);
             mAddItemFrame.setVisibility(View.VISIBLE);
         } else{
+            mShowAddModuleButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mShowAddModuleButton.setImageResource(R.drawable.ic_add_white_24dp);
             mAddItemFrame.setVisibility(View.GONE);
             mSearchIcon.setVisibility(View.INVISIBLE);
             if(mCameraButton.getVisibility() != View.GONE){
