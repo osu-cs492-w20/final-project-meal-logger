@@ -115,7 +115,7 @@ public class MeasureMealItemDialog extends DialogFragment {
             .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        if(mSelected!=null && mEtAmount.getText().toString()!=""){
+                        if(mSelected!=null && !mEtAmount.getText().toString().equals("")){
                             Log.d(TAG,"!=="+mSelected.portionDescription);
                             mAcceptListener.calculatePortions(mSelectIndex,
                                     Float.parseFloat(mEtAmount.getText().toString())

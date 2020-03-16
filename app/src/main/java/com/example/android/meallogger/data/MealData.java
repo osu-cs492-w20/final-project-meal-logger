@@ -15,6 +15,7 @@ public class MealData implements Serializable {
     public byte[] photo;
     public String totalFat;
     public String totalSatFat;
+    public String totalTransFat;
     public String totalCholesterol;
     public String totalSodium;
     public String totalCarb;

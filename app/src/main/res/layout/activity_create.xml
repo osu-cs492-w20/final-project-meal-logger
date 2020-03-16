@@ -74,6 +74,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:src="@drawable/ic_done_24dp"
+                                    android:background="@color/colorPrimary"
                                     />
                                 <ProgressBar
                                     android:id="@+id/pb_add_item"
@@ -104,7 +105,7 @@
                                     android:id="@+id/et_title_box"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:textSize="22sp"
+                                    android:textSize="24sp"
                                     android:hint="Enter Title"
                                     android:singleLine="true"
                                     android:visibility="invisible"/>
@@ -113,15 +114,17 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:textSize="24sp"
-                                    android:text="@string/tv_meal_title"
-                                    android:layout_gravity="center_vertical"/>
+                                    android:text="@string/tv_meal_title" />
                             </FrameLayout>
                             <ImageButton
                                 android:id="@+id/button_title_confirm"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
                                 android:src="@drawable/ic_create_black_24dp"
-                                android:visibility="invisible" />
+                                android:visibility="invisible"
+                                android:background="@color/colorPrimary"
+                                android:layout_margin="15dp"
+                                android:scaleType="fitCenter"/>
                         </LinearLayout>
                     </FrameLayout>
                 </FrameLayout>

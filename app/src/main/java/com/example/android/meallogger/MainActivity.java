@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity
 
     public static SavedMealsViewModel mViewModel;
 
+    public List<MealData> mSavedMeals;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity
         mViewModel.getAllMeals().observe(this, new Observer<List<MealData>>() {
             @Override
             public void onChanged(List<MealData> meals) {
+                mSavedMeals = meals;
                 mSavedMealsAdapter.updateSavedMeals(meals);
             }
         });
@@ -81,14 +85,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-//        mRvAdapter = new FoodidRecyclerAdapter();
-//
-//        mItemRv.setAdapter(mRvAdapter);
-//        mItemRv.setLayoutManager(new LinearLayoutManager(this));
-//        mItemRv.setHasFixedSize(true);
-//        Meal newlyCreatedMeal = null;
+        ItemTouchHelper.Callback SimpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-        
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                mViewModel.deleteSavedMeal(mSavedMeals.get(viewHolder.getAdapterPosition()));
+                ((SavedMealsAdapter.SavedMealsViewHolder)viewHolder).remove();
+            }
+        };
+        ItemTouchHelper helper = new ItemTouchHelper(SimpleCallback);
+        helper.attachToRecyclerView(mSavedMealsRV);
     }
 
     @Override
@@ -117,6 +127,9 @@ public class MainActivity extends AppCompatActivity
     public void onSavedMealClicked(MealData meal) {
         Log.d(TAG, "saved meal clicked");
         // will add intent to open meal detail activity later
+        Intent intent = new Intent(this, SavedMealDetailActivity.class);
+        intent.putExtra("data", meal);
+        startActivity(intent);
     }
 
     @Override

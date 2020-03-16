@@ -26,6 +26,8 @@
                 <action android:name="android.intent.action.IMAGE_CAPTURE" />
             </intent-filter>
         </activity>
+        <activity android:name=".SavedMealDetailActivity">
+        </activity>
     </application>
 
 </manifest>

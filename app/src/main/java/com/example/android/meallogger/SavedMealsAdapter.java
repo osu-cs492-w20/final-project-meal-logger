@@ -78,6 +78,12 @@ public class SavedMealsAdapter extends RecyclerView.Adapter<SavedMealsAdapter.Sa
             mMealDateTV.setText(meal.date);
             mMealTimeTV.setText(meal.time);
         }
+
+        public void remove() {
+            int position  = getAdapterPosition();
+            mSavedMealsList.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
 }
