@@ -25,7 +25,7 @@ public class MealRepository implements APIQueryTask.Callback{
     private MutableLiveData<Meal> mFinalMeal;
     private MutableLiveData<Status> mStatus;
     private MutableLiveData<ArrayList<FoodId>> mFoodChoice;
-
+    private int mItems;
 
     public MealRepository(){
         mFinalMeal = new MutableLiveData<>();
@@ -35,6 +35,8 @@ public class MealRepository implements APIQueryTask.Callback{
 
         mFoodChoice = new MutableLiveData<>();
         mFoodChoice.setValue(null);
+
+        mItems = 0;
     }
 
     public LiveData<Meal> returnMeal(){ return mFinalMeal; }
@@ -66,6 +68,7 @@ public class MealRepository implements APIQueryTask.Callback{
         newValue = mFinalMeal.getValue();
         json.appliedPortionIndex = -1;
         newValue.items.add(0, json);
+        mItems++;
         newValue.items.get(0).totalGramWeight = sumWeight(newValue.items.get(0).foodNutrients);
 
         mFinalMeal.setValue(newValue);
@@ -193,6 +196,12 @@ public class MealRepository implements APIQueryTask.Callback{
                 return (float)safety/1000;
             case '-':
                 safety = (int)((total*1000) - (amount * multiplier * 1000));
+            //Catch bad arithmetic
+                if(safety<0){
+                    safety = 0;
+                } else if(mItems==0 && safety>0){
+                    safety=0;
+                }
                 return (float)safety/1000;
             default:
                 return 0;
@@ -213,10 +222,8 @@ public class MealRepository implements APIQueryTask.Callback{
 
     public void removeFoodItemfromMeal(int index){
         Meal updateMeal = mFinalMeal.getValue();
-
+        mItems--;
         MealItem removeItem = updateMeal.items.get(index);
-        Log.d(TAG, "!===Removing:"+removeItem.description);
-
         mFinalMeal.setValue(subTotal(updateMeal, removeItem));
     }
 
@@ -237,7 +244,6 @@ public class MealRepository implements APIQueryTask.Callback{
     public void updatePortionMult(int fIndex, int pIndex, float amountOfServing){
         Meal newValue = mFinalMeal.getValue();
         MealItem editItem = newValue.items.get(fIndex);
-        Log.d(TAG, "!==pIndex:"+pIndex+"=="+editItem.appliedPortionIndex);
         if(editItem.appliedPortionIndex!=pIndex || editItem.amountPortion!=amountOfServing){
             if(editItem.appliedPortionIndex != -1){
                 newValue = subTotal(newValue, newValue.items.get(fIndex));

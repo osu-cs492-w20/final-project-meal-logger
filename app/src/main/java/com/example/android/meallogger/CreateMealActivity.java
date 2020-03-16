@@ -187,9 +187,9 @@ public class CreateMealActivity extends AppCompatActivity implements FoodidRecyc
                     mButtonAddItem.setVisibility(View.VISIBLE);
                     showModule();
                     mRvAddedItems.scrollToPosition(0);
-                    mRvAddAdapter.updateAdapter(mFinalMeal.items);
+//                    mRvAddAdapter.updateAdapter(mFinalMeal.items);
                 //FIX: Pretty animation but causes dupe
-//                    mRvAddAdapter.insertAdapter(mFinalMeal.items.get(0));
+                    mRvAddAdapter.insertAdapter(mFinalMeal.items.get(0));
                 } else if(status == Status.DONE){
                     //Hide TextBox & Pic
                     mAddItemTextBox.setVisibility(View.INVISIBLE);

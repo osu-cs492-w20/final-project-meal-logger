@@ -92,6 +92,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
                             android:gravity="center"
                             android:orientation="horizontal">
                             <FrameLayout
@@ -103,7 +104,7 @@
                                     android:id="@+id/et_title_box"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:textSize="24sp"
+                                    android:textSize="22sp"
                                     android:hint="Enter Title"
                                     android:singleLine="true"
                                     android:visibility="invisible"/>
@@ -112,7 +113,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:textSize="24sp"
-                                    android:text="@string/tv_meal_title" />
+                                    android:text="@string/tv_meal_title"
+                                    android:layout_gravity="center_vertical"/>
                             </FrameLayout>
                             <ImageButton
                                 android:id="@+id/button_title_confirm"

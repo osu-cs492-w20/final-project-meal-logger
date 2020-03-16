@@ -33,8 +33,8 @@ public class MealitemRecyclerAdapter extends RecyclerView.Adapter<MealitemRecycl
 
     public void updateAdapter(List<MealItem> list){
         mItems = list;
+        notifyItemInserted(0);
         notifyDataSetChanged();
-//        notifyItemInserted(0);
     }
 
     public void insertAdapter(MealItem item){
